@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Form Container */
+    .form-container {
+        width: 100%;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        flex-direction: row; /* Align items horizontally */
+        flex-wrap: wrap; /* Allow wrapping for responsiveness */
+        gap: 20px; /* Space between form groups */
+    }
+
+    /* Form Group */
+    .form-group {
+        flex: 1 1 calc(33.33% - 20px); /* Each item takes 1/3 of the row width minus gaps */
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* Form Title */
+    .form-container h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-size: 24px;
+        font-weight: bold;
+        width: 100%; /* Make title span the full row */
+    }
+
+    /* Form Fields */
+    .form-container label {
+        font-weight: 500;
+        color: #34495e;
+        margin-bottom: 5px;
+        display: block;
+        font-size: 14px;
+    }
+
+    .form-container input[type="text"],
+    .form-container input[type="number"],
+    .form-container input[type="date"],
+    .form-container select,
+    .form-container textarea {
+        width: 80%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-container input:focus,
+    .form-container select:focus,
+    .form-container textarea:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        outline: none;
+    }
+
+    /* Form Buttons */
+    .form-container .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .form-container .btn-primary {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .form-container .btn-primary:hover {
+        background-color: #2980b9;
+    }
+
+    /* Error Messages */
+    .form-container .error {
+        color: #e74c3c;
+        font-size: 12px;
+        margin-top: -10px;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="form-container">
+    <h2>Nascimento Animal</h2>
+    <form method="post" enctype="multipart/form-data" style="display: flex; flex-wrap: wrap; width: 100%;">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.brinco.label_tag }}
+            {{ form.brinco }}
+        </div>
+        <div class="form-group">
+            {{ form.fornecedor.label_tag }}
+            {{ form.fornecedor }}
+        </div>
+        <div class="form-group">
+            {{ form.raca.label_tag }}
+            {{ form.raca }}
+        </div>
+        <div class="form-group">
+            {{ form.sexo.label_tag }}
+            {{ form.sexo }}
+        </div>
+        <div class="form-group">
+            {{ form.peso_entrada.label_tag }}
+            {{ form.peso_entrada }}
+        </div>
+        <div class="form-group">
+            {{ form.data_nascimento.label_tag }}
+            {{ form.data_nascimento }}
+        </div>
+        <div class="form-group">
+            {{ form.data_entrada.label_tag }}
+            {{ form.data_entrada }}
+        </div>
+        <div class="form-group">
+            {{ form.status_boi.label_tag }}
+            {{ form.status_boi }}
+        </div>
+        <div class="form-group">
+            {{ form.lote.label_tag }}
+            {{ form.lote }}
+        </div>
+        <div class="form-group" style="flex: 1 1 100%; text-align: right;">
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

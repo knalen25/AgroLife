@@ -1,0 +1,175 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AgroLife{% endblock %}</title>
+    <meta name="description" content="Sistema de gestão agropecuária">
+    <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #4a8c25;
+            --color-primary-dark: #3a7020;
+            --color-secondary: #f59e0b;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #ef4444;
+            --color-accent: #8b5cf6;
+            --color-background: #18181b;
+            --color-text: #f1f5f9;
+            --color-text-muted: #a1a1aa;
+            --color-border: #27272a;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: var(--color-text);
+            background-color: var(--color-background);
+        }
+        .bg-primary { background-color: var(--color-primary); }
+        .text-primary { color: var(--color-primary); }
+        .border-primary { border-color: var(--color-primary); }
+        .bg-primary-dark { background-color: var(--color-primary-dark); }
+        .dark-bg { background-color: #18181b; }
+        .dark-text { color: #f1f5f9; }
+        .dark-border { border-color: #27272a; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="dark-bg dark-text min-h-screen">
+    <div class="flex flex-col md:flex-row min-h-screen w-full">
+        <!-- Sidebar -->
+        <aside class="w-full md:w-64 bg-zinc-900 border-r dark-border flex-shrink-0">
+            <div class="p-6 flex flex-col items-center border-b dark-border gap-4">
+                <img src="{% static 'img/logo.png' %}" alt="Logo AgroLife" class="h-16 max-h-20 w-auto mx-auto block object-contain">
+            </div>
+            <nav class="p-4">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="/" class="flex items-center px-4 py-2 rounded-lg text-gray-200 hover:bg-green-800 focus:bg-green-900 transition-colors duration-200">
+                            <span class="mr-3">🏠</span> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex flex-col">
+                            <button type="button" class="flex items-center px-4 py-2 rounded-lg text-gray-200 hover:bg-green-800 focus:bg-green-900 transition-colors duration-200 group" onclick="document.getElementById('cadastro-submenu').classList.toggle('hidden')">
+                                <span class="mr-3">📋</span> Cadastro
+                                <svg class="w-4 h-4 ml-auto transform group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <ul id="cadastro-submenu" class="ml-8 mt-1 space-y-1 hidden bg-zinc-800 rounded-lg shadow-lg p-2">
+                                <li><a href="{% url 'listaboi' %}" class="block px-3 py-1 rounded hover:bg-green-900 focus:bg-green-900 transition-colors duration-200">Animal</a></li>
+                                <li><a href="{% url 'listacurral' %}" class="block px-3 py-1 rounded hover:bg-green-900 focus:bg-green-900 transition-colors duration-200">Curral</a></li>
+                                <li><a href="{% url 'listalote' %}" class="block px-3 py-1 rounded hover:bg-green-900 focus:bg-green-900 transition-colors duration-200">Lote</a></li>
+                                {% comment %} <li><a href="{% url 'listamedicamento' %}" class="block px-3 py-1 rounded hover:bg-green-900 focus:bg-green-900 transition-colors duration-200">Medicação</a></li> {% endcomment %}
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-2 rounded-lg text-gray-200 hover:bg-green-800 focus:bg-green-900 transition-colors duration-200">
+                            <span class="mr-3">🛠️</span> Manejo
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-2 rounded-lg text-gray-200 hover:bg-green-800 focus:bg-green-900 transition-colors duration-200">
+                            <span class="mr-3">❤️</span> Sanidade
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-2 rounded-lg text-gray-200 hover:bg-green-800 focus:bg-green-900 transition-colors duration-200">
+                            <span class="mr-3">🚑</span> Ronda
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center px-4 py-2 rounded-lg text-gray-200 hover:bg-green-800 focus:bg-green-900 transition-colors duration-200">
+                            <span class="mr-3">📈</span> Relatórios
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'logout' %}" class="flex items-center px-4 py-2 rounded-lg text-gray-200 hover:bg-green-800 focus:bg-green-900 transition-colors duration-200">
+                            <span class="mr-3">⏻</span> Sair
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        <!-- Mobile menu -->
+        <div class="bg-primary text-white md:hidden w-full fixed top-0 z-10">
+            <div class="flex items-center justify-between p-4">
+                <span class="text-xl font-bold">AgroLife</span>
+                <button id="mobile-menu-button" class="focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="mobile-menu" class="hidden bg-primary-dark p-4">
+                <nav>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Dashboard</a></li>
+                        <li><a href="{% url 'listaboi' %}" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Animal</a></li>
+                        <li><a href="{% url 'listacurral' %}" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Curral</a></li>
+                        <li><a href="{% url 'listalote' %}" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Lote</a></li>
+                        {% comment %} <li><a href="{% url 'listamedicamento' %}" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Medicação</a></li> {% endcomment %}
+                        <li><a href="#" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Manejo</a></li>
+                        <li><a href="#" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Sanidade</a></li>
+                        <li><a href="#" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Ronda</a></li>
+                        <li><a href="#" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Relatórios</a></li>
+                        <li><a href="{% url 'logout' %}" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Sair</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!-- Main content -->
+        <main class="flex-1 min-h-screen overflow-y-auto bg-zinc-800 md:p-6 p-4 md:pt-6 pt-20 flex flex-col">
+            {% block header %}{% endblock %}
+            <div class="animate-enter flex-1 flex flex-col">
+                {% block content %}
+                <!-- DASHBOARD INICIAL -->
+                <div class="w-full max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-16 px-2">
+                    <div class="bg-zinc-900 rounded-2xl p-8 flex flex-col items-center shadow-xl border-2 border-zinc-700 hover:border-green-700 transition-all duration-200">
+                        <span class="text-5xl mb-3">🐄</span>
+                        <span class="text-lg font-semibold">Animais</span>
+                        <span class="text-3xl font-bold mt-2">123</span>
+                    </div>
+                    <div class="bg-zinc-900 rounded-2xl p-8 flex flex-col items-center shadow-xl border-2 border-zinc-700 hover:border-green-700 transition-all duration-200">
+                        <span class="text-5xl mb-3">🏠</span>
+                        <span class="text-lg font-semibold">Currais</span>
+                        <span class="text-3xl font-bold mt-2">8</span>
+                    </div>
+                    <div class="bg-zinc-900 rounded-2xl p-8 flex flex-col items-center shadow-xl border-2 border-zinc-700 hover:border-green-700 transition-all duration-200">
+                        <span class="text-5xl mb-3">💉</span>
+                        <span class="text-lg font-semibold">Medicações</span>
+                        <span class="text-3xl font-bold mt-2">15</span>
+                    </div>
+                    <div class="bg-zinc-900 rounded-2xl p-8 flex flex-col items-center shadow-xl border-2 border-zinc-700 hover:border-green-700 transition-all duration-200">
+                        <span class="text-5xl mb-3">📈</span>
+                        <span class="text-lg font-semibold">Relatórios</span>
+                        <span class="text-3xl font-bold mt-2">5</span>
+                    </div>
+                </div>
+                <!-- FIM DASHBOARD INICIAL -->
+                {% endblock %}
+            </div>
+            <footer class="mt-auto pt-6 pb-4 text-sm text-center text-gray-400">
+                <p>© {% now "Y" %} AgroLife - Sistema de Gestão Agropecuária</p>
+            </footer>
+        </main>
+        {% block sidebar %}{% endblock %}
+    </div>
+    <script>
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (menuButton && mobileMenu) {
+                menuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

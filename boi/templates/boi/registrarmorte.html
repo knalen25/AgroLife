@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Registrar Morte do Boi {{ object.brinco }}</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-danger">Salvar</button>
+  </form>
+{% endblock %}

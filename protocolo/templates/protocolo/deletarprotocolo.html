@@ -1,0 +1,7 @@
+<h2>Excluir Protocolo</h2>
+<p>Tem certeza que deseja excluir o protocolo "{{ protocolo.nome_protocolo }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Sim, excluir</button>
+    <a href="{% url 'listaprotocolo' %}">Cancelar</a>
+</form>

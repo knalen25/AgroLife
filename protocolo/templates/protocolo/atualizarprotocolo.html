@@ -1,0 +1,12 @@
+<h2>Editar Protocolo: {{ protocolo.nome_protocolo }}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ protocolo_form.as_p }}
+    {{ formset.management_form }}
+    {% for form in formset %}
+        <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
+            {{ form.as_p }}
+        </div>
+    {% endfor %}
+    <button type="submit">Salvar</button>
+</form>

@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+
+{% block title %}Lista de Bois{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Container Principal */
+    .main-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: calc(100% - 250px); /* Quando a sidebar está expandida */
+        margin-left: 250px; /* Espaço para a sidebar expandida */
+        transition: margin-left 0.3s ease, width 0.3s ease;
+        background-color: #f5f5f5;
+        padding: 20px;
+        box-sizing: border-box; /* Inclui padding no tamanho total */
+    }
+    
+    .sidebar.collapsed + .main-content {
+        width: calc(100% - 60px); /* Quando a sidebar está colapsada */
+        margin-left: 60px; /* Espaço para a sidebar colapsada */
+    }
+    
+    /* Container da Lista */
+    .list-container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+    }
+    
+    /* Título */
+    .list-container h1 {
+        font-size: 32px;
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+    
+    /* Formulário de Busca */
+    .search-form {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .search-input {
+        flex: 1;
+        max-width: 350px;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+    }
+    
+    .search-input:focus {
+        border-color: #28a745; /* Verde */
+        outline: none;
+        box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+    }
+    
+    /* Botões do Formulário */
+    .search-form .btn {
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        color: white;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        min-width: 130px; /* Largura mínima uniforme */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .search-button {
+        background-color: #007bff; /* Azul */
+    }
+    
+    .search-button:hover {
+        background-color: #0056b3; /* Azul mais escuro */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    
+    .clear-button {
+        background-color: #ff1d0b; /* Vermelho */
+    }
+    
+    .clear-button:hover {
+        background-color: #b81414; /* Vermelho mais escuro */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    
+    .add-button {
+        background-color: #28a745; /* Verde */
+    }
+    
+    .add-button:hover {
+        background-color: #218838; /* Verde mais escuro */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Tabela da Lista */
+    .list-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-size: 16px;
+        text-align: left;
+    }
+    
+    .list-table th,
+    .list-table td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    .list-table th {
+        background-color: #141432; /* Preto com base no design da sidebar */
+        color: white;
+        font-size: 18px;
+    }
+    
+    .list-table tbody tr:hover {
+        background-color: #e0e0e0;
+        transition: background-color 0.3s ease;
+    }
+    
+    .list-table .no-results {
+        text-align: center;
+        color: #888;
+        font-style: italic;
+        padding: 20px;
+    }
+    
+    /* Responsividade */
+    @media (max-width: 768px) {
+        .main-content {
+            width: 100%;
+            margin-left: 0; /* Remove margem para sidebar */
+        }
+    
+        .sidebar.collapsed + .main-content {
+            width: 100%;
+        }
+    
+        .list-container {
+            padding: 15px;
+        }
+    
+        .search-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    
+        .search-input {
+            width: 100%;
+        }
+    
+        .search-form .btn {
+            width: 100%; /* Botões ocupam largura completa */
+        }
+    
+        .list-table th,
+        .list-table td {
+            font-size: 14px;
+            padding: 10px;
+        }
+    }
+    </style>
+    
+    <div class="list-container">
+        <h1>Lista de Bois</h1>
+    
+        <form method="get" action="" class="search-form">
+            <input type="text" name="search" placeholder="Buscar boi" value="{{ request.GET.search }}" class="search-input">
+            <button type="submit" class="btn search-button">Buscar</button>
+            <a href="{% url 'listaboi' %}" class="btn clear-button">Limpar</a>
+        </form>
+    
+        <table class="list-table">
+            <thead>
+                <tr>
+                    <th>Brinco</th>
+                    <th>Fornecedor</th>
+                    <th>Raça</th>
+                    <th>Sexo</th>
+                    <th>Peso Entrada (kg)</th>
+                    <th>Data Nasc.</th>
+                    <th>Data Entrada</th>
+                    <th>Status</th>
+                    <th>Lote</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if bois %}
+                    {% for boi in bois %}
+                        <tr onclick="window.location.href='{% url 'detalheboi' pk=boi.pk %}'" style="cursor: pointer;">
+                            <td>{{ boi.brinco }}</td>
+                            <td>{{ boi.fornecedor }}</td>
+                            <td>{{ boi.raca }}</td>
+                            <td>{{ boi.sexo }}</td>
+                            <td>{{ boi.peso_entrada }}</td>
+                            <td>{{ boi.data_nascimento }}</td>
+                            <td>{{ boi.data_entrada }}</td>
+                            <td>{{ boi.get_status_boi_display }}</td>
+                            <td>{{ boi.lote }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="13" class="no-results">Nenhum boi encontrado.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    
+{% endblock %}

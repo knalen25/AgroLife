@@ -1,0 +1,30 @@
+<h2>Protocolos Sanitários</h2>
+<a href="{% url 'criarprotocolo' %}">Novo Protocolo</a>
+<hr>
+
+{% for protocolo in protocolos %}
+    <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc;">
+        <h3>{{ protocolo.nome_protocolo }}</h3>
+        <p><strong>Motivo:</strong> {{ protocolo.motivo_protocolo }}</p>
+        <p><strong>Responsável:</strong> {{ protocolo.responsavel_tecnico }}</p>
+
+        {% comment %} <h4>Medicamentos:</h4>
+        {% if protocolo.protocolos_por_sanitario.all %}
+            <ul>
+                {% for relacao in protocolo.protocolos_por_sanitario.all %}
+                    <li>
+                        {{ relacao.medicamento.nome_medicamento }} – {{ relacao.dose_protocolo }} ml
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p style="color: gray;">Nenhum medicamento vinculado.</p>
+        {% endif %} {% endcomment %}
+
+        {% comment %} <a href="{% url 'detalheprotocolo' protocolo.pk %}">Detalhes</a> | {% endcomment %}
+        <a href="{% url 'atualizarprotocolo' protocolo.pk %}">Editar</a> |
+        <a href="{% url 'deletarprotocolo' protocolo.pk %}">Excluir</a>
+    </div>
+{% empty %}
+    <p>Nenhum protocolo encontrado.</p>
+{% endfor %}

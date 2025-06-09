@@ -1,0 +1,233 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Geral */
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    height: 100vh;
+    background-color: #f5f5f5;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #141432;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+    overflow-y: auto;
+}
+
+.sidebar.collapsed {
+    width: 60px;
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #1d1d3b;
+    border-bottom: 1px solid #2d2d4f;
+}
+
+.logo .menu-icon {
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.logo .logo-text {
+    display: inline-block;
+    transition: opacity 0.3s ease, width 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.sidebar.collapsed .logo .logo-text {
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+}
+
+/* Menu */
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 15px 20px;
+    cursor: pointer;
+    color: white;
+    border-bottom: 1px solid #2d2d4f;
+    transition: background-color 0.3s ease;
+}
+
+.menu-item i {
+    font-size: 20px;
+    margin-right: 15px;
+}
+
+.menu-item:hover {
+    background-color: #2d2d4f;
+}
+
+.menu-item .title {
+    font-size: 16px;
+    transition: opacity 0.3s ease, margin 0.3s ease;
+    text-align: left;
+    margin-left: 10px;
+    width: 100%;
+}
+
+.sidebar.collapsed .menu-item .title {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Submenu */
+.has-submenu {
+    display: flex;
+    flex-direction: column;
+}
+
+.has-submenu .menu-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: none; /* Esconde o submenu por padrão */
+    flex-direction: column;
+    background-color: #1d1d3b;
+}
+
+.submenu.open {
+    display: flex; /* Mostra o submenu ao abrir */
+}
+
+.submenu-item {
+    padding: 10px 20px;
+    font-size: 14px;
+    color: #b3b3cc;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    text-align: left;
+}
+
+.submenu-item a {
+    text-decoration: none;
+    color: #b3b3cc;
+    display: block;
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.submenu-item a:hover {
+    color: white;
+    background-color: #2d2d4f;
+}
+
+.submenu-item a:visited {
+    color: #b3b3cc;
+}
+
+.submenu-item a.active {
+    color: white;
+    font-weight: bold;
+    background-color: #1d1d3b;
+}
+
+/* Botão Sair */
+.menu-item a.submenu-link {
+    text-decoration: none;
+    color: #b3b3cc; /* Cor padrão */
+    font-size: 14px;
+    display: inline-block;
+    padding: 10px 0; /* Ajuste do espaçamento */
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.menu-item a.submenu-link:hover {
+    color: white;
+    background-color: #2d2d4f; /* Fundo ao passar o mouse */
+    border-radius: 4px; /* Bordas arredondadas */
+}
+
+.menu-item a.submenu-link.active {
+    color: white; /* Cor do link ativo */
+    font-weight: bold;
+    background-color: #1d1d3b; /* Fundo destacado */
+    
+}
+
+/* Conteúdo Principal */
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+.sidebar.collapsed + .main-content {
+    margin-left: 60px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 60px;
+    }
+
+    .sidebar.collapsed {
+        width: 0;
+    }
+
+    .main-content {
+        margin-left: 60px;
+    }
+
+    .sidebar.collapsed + .main-content {
+        margin-left: 0;
+    }
+
+    .menu-item .title {
+        display: none;
+    }
+
+    .submenu-item {
+        font-size: 12px;
+    }
+}
+
+/* Main Content */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    margin-left: 250px; /* Leave space for the sidebar */
+    transition: margin-left 0.3s ease;
+    background-color: #f5f5f5; /* Matches body background */
+    padding: 20px;
+}
+
+/* Adjust for collapsed sidebar */
+.sidebar.collapsed + .main-content {
+    margin-left: 60px; /* Adjust for smaller sidebar */
+}

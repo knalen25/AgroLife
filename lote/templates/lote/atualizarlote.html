@@ -1,0 +1,161 @@
+{% extends "home/base.html" %}
+
+{% block content %}
+
+<style>
+    /* Centralizar o conteúdo responsivamente */
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: calc(100% - 250px); /* Quando a sidebar está expandida */
+    margin-left: 250px; /* Largura da sidebar expandida */
+    transition: margin-left 0.3s ease, width 0.3s ease;
+    background-color: #f5f5f5;
+    padding: 20px;
+    box-sizing: border-box; /* Inclui padding no tamanho total */
+}
+
+.sidebar.collapsed + .main-content {
+    width: calc(100% - 60px); /* Quando a sidebar está colapsada */
+    margin-left: 60px; /* Largura da sidebar colapsada */
+}
+
+/* Estilização do Formulário (Atualizar Curral) */
+.form-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px 40px;
+    max-width: 650px;
+    width: 100%; /* O formulário ocupará toda a largura disponível, limitado pelo max-width */
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.form-card input[type="text"], 
+.form-card input[type="number"], 
+.form-card select {
+    width: 100%; /* Faz com que os campos ocupem toda a largura disponível */
+    padding: 12px 15px; /* Adiciona espaçamento interno */
+    margin: 8px 0; /* Espaçamento entre os campos */
+    font-size: 16px; /* Tamanho da fonte no campo */
+    border: 1px solid #ccc; /* Borda leve */
+    border-radius: 5px; /* Bordas arredondadas */
+    box-sizing: border-box; /* Inclui o padding no tamanho total */
+}
+
+/* Ajusta os campos ao passar o mouse */
+.form-card input[type="text"]:focus, 
+.form-card input[type="number"]:focus, 
+.form-card select:focus {
+    border-color: #28a745; /* Cor da borda quando o campo está em foco */
+    outline: none; /* Remove o contorno padrão */
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.3); /* Adiciona uma sombra suave ao focar */
+}
+
+.form-card h1 {
+    margin-bottom: 20px;
+    font-size: 30px;
+    color: #333;
+}
+
+.form-card table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.form-card table td {
+    width: 60%; /* Os campos ocupam metade da tabela */
+}
+
+.form-card table tr td {
+    padding: 10px;
+    text-align: left;
+    font-size: 16px;
+    color: #555;
+}
+
+.form-card .buttons-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Espaçamento entre os botões */
+    margin-top: 20px;
+}
+
+.form-card .btn {
+    flex: 1; /* Garante que os botões ocupem a largura proporcional */
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-card .btn-primary {
+    background-color: #28a745;
+}
+
+.form-card .btn-primary:hover {
+    background-color: #218838;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.form-card .btn-secondary {
+    background-color: #ff1d0b;
+}
+
+.form-card .btn-secondary:hover {
+    background-color: #b81414;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsividade para dispositivos menores */
+@media (max-width: 768px) {
+    .main-content {
+        width: 100%; /* Ajusta a largura do conteúdo principal */
+        margin-left: 0; /* Remove a margem da sidebar */
+    }
+
+    .sidebar.collapsed + .main-content {
+        width: 100%;
+    }
+
+    .form-card {
+        padding: 15px 20px;
+        max-width: 90%; /* O formulário ocupa 90% da largura em telas pequenas */
+    }
+
+    .buttons-container {
+        flex-direction: column; /* Botões empilhados em telas pequenas */
+        gap: 20px;
+    }
+}
+</style>
+
+<div class="main-container">
+    <form method="post" enctype="multipart/form-data" class="form-card">
+        {% csrf_token %}
+        <h1>Editar Lote</h1>
+        <table>
+
+            {{ form.as_table }}
+            
+        </table>
+        <div>
+            <div class="buttons-container">
+                <input type="submit" value="Cadastrar" class="btn btn-primary">
+                <a href="{% url 'detalhelote' pk=object.pk %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

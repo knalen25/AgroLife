@@ -17,6 +17,7 @@ urlpatterns = [
     path('login/', v2.login_view, name='login'),
     path('logout/', v2.logout_view, name='logout'),
     path('protocolo/', include("protocolo.urls")),
+    path('movimentacao/', include("movimentacao.urls")),
     # path('manejo', include('manejo.urls')),
 
 ]

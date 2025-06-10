@@ -26,3 +26,7 @@ class Lote(models.Model):
 
     class Meta:
         db_table = 'Lote'
+
+    def __str__(self):
+        # Esta função diz ao Django para usar o nome do lote como sua representação em texto
+        return self.nome_lote

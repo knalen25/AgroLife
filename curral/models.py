@@ -57,4 +57,8 @@ class Curral(models.Model):
 
     class Meta:
         db_table = 'Curral'
+    
+    def __str__(self):
+        # Esta função diz ao Django para usar o nome do curral como sua representação em texto
+        return self.nome_curral
 

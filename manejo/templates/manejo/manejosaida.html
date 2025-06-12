@@ -1,0 +1,75 @@
+{% comment %} {% extends "base.html" %}  {% endcomment %}
+{% block content %}
+<style>
+    .container-venda { display: flex; gap: 2em; }
+    .col-busca, .col-lista { flex: 1; padding: 1em; background-color: #f9f9f9; border-radius: 8px;}
+    .resultado-busca { background-color: #e3f2fd; padding: 1em; margin-top: 1em; border: 1px solid #90caf9; }
+</style>
+
+<h1>Manejo de Saída (Venda por Busca)</h1>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<div class="container-venda">
+    <div class="col-busca">
+        <h3>1. Buscar Animal</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ busca_form.as_p }}
+            <button type="submit" name="buscar_boi">Buscar</button>
+        </form>
+
+        {% if boi_encontrado %}
+            <div class="resultado-busca">
+                <h4>Animal Encontrado</h4>
+                <p><strong>Brinco:</strong> {{ boi_encontrado.brinco }}</p>
+                <p><strong>Raça:</strong> {{ boi_encontrado.raca }}</p>
+                <p><strong>Lote Atual:</strong> {{ boi_encontrado.lote }}</p>
+                <hr>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ venda_form.as_p }}
+                    <button type="submit" name="adicionar_a_venda">Adicionar à Venda</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="col-lista">
+        <h3>2. Animais na Venda Atual ({{ venda_atual|length }})</h3>
+        {% if venda_atual %}
+            <table border="1" style="width:100%; text-align: left;">
+                <thead>
+                    <tr>
+                        <th>Brinco</th>
+                        <th>Peso Saída</th>
+                        <th>Data Saída</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in venda_atual %}
+                    <tr>
+                        <td>{{ item.brinco }}</td>
+                        <td>{{ item.peso_saida }} kg</td>
+                        <td>{{ item.data_saida }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" name="finalizar_venda" style="width:100%; padding: 1em; background-color: #28a745; color: white; border: none; font-size: 1.2em;">
+                    Finalizar Venda de {{ venda_atual|length }} Animal(is)
+                </button>
+            </form>
+        {% else %}
+            <p>A lista de venda está vazia. Busque um animal para começar.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

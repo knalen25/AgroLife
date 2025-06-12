@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo Manejo de Entrada</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; background-color: #f4f4f4; }
+        h1, h2 { color: #333; }
+        .form-section { background-color: #fff; padding: 2em; margin-bottom: 2em; border: 1px solid #ddd; border-radius: 8px; }
+        .form-container { border: 1px solid #ccc; padding: 1em; margin-bottom: 1em; border-radius: 8px; }
+        button { padding: 0.8em 1.2em; cursor: pointer; border-radius: 5px; border: none; color: white; margin-top: 10px; } /* Adicionado margin-top */
+        .btn-add { background-color: #28a745; }
+        .btn-submit { background-color: #007bff; font-size: 1.2em; }
+        input, select { width: 95%; padding: 8px; margin-top: 4px; }
+        .messages { list-style: none; padding: 0; margin-bottom: 1em; }
+        .messages li.success { background-color: #d4edda; color: #155724; padding: 1em; border-radius: 5px; }
+        .messages li.error { background-color: #f8d7da; color: #721c24; padding: 1em; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>Novo Manejo de Entrada</h1>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-section">
+            <h2>1. Detalhes do Manejo</h2>
+            {% if form_manejo.non_field_errors %}
+                <div style="color: red;">{{ form_manejo.non_field_errors }}</div>
+            {% endif %}
+
+            {% for field in form_manejo %}
+                <p>
+                    {{ field.label_tag }}<br>
+                    {{ field }}
+                    {% if field.errors %}
+                        <strong style="color: red;">{{ field.errors|join:", " }}</strong>
+                    {% endif %}
+                </p>
+            {% endfor %}
+        </div>
+
+        <div class="form-section">
+            <h2>2. Defina as Regras de Alocação (Parâmetros)</h2>
+            {{ formset_parametros.management_form }}
+            
+            {% if formset_parametros.non_form_errors %}
+                <div style="color: red;">{{ formset_parametros.non_form_errors }}</div>
+            {% endif %}
+
+            <div id="parametros-form-container">
+                {% for form in formset_parametros %}
+                    <div class="form-container parametro-form">
+                        {% for field in form %}
+                           <p>
+                                {{ field.label_tag }}<br>
+                                {{ field }}
+                                {% if field.errors %}<strong style="color: red;">{{ field.errors|join:", " }}</strong>{% endif %}
+                            </p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="button" class="btn-add" id="add-parametro-button">Adicionar Outra Regra</button>
+        </div>
+
+        <div class="form-section">
+            <h2>3. Adicione os Animais</h2>
+            {{ formset_bois.management_form }}
+
+            {% if formset_bois.non_form_errors %}
+                <div style="color: red;">{{ formset_bois.non_form_errors }}</div>
+            {% endif %}
+
+            <div id="bois-form-container">
+                {% for form in formset_bois %}
+                    <div class="form-container boi-form">
+                         {% for field in form %}
+                           <p>
+                                {{ field.label_tag }}<br>
+                                {{ field }}
+                                {% if field.errors %}<strong style="color: red;">{{ field.errors|join:", " }}</strong>{% endif %}
+                            </p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+             <button type="button" class="btn-add" id="add-boi-button">Adicionar Outro Animal</button>
+        </div>
+
+        <button type="submit" class="btn-submit">Salvar Manejo Completo</button>
+    </form>
+
+    <div id="parametro-empty-form" style="display: none;">
+        <div class="form-container parametro-form">{{ formset_parametros.empty_form.as_p }}</div>
+    </div>
+    <div id="boi-empty-form" style="display: none;">
+        <div class="form-container boi-form">{{ formset_bois.empty_form.as_p }}</div>
+    </div>
+
+    <script>
+    function setup_formset(containerId, buttonId, emptyFormId, prefix) {
+        const container = document.getElementById(containerId);
+        const addButton = document.getElementById(buttonId);
+        // Verifica se o botão de adicionar realmente existe na página antes de adicionar o listener
+        if (!addButton) {
+            return;
+        }
+        const emptyFormTemplate = document.getElementById(emptyFormId).innerHTML;
+        const totalFormsInput = document.querySelector(`input[name="${prefix}-TOTAL_FORMS"]`);
+
+        addButton.addEventListener('click', function() {
+            let formNum = parseInt(totalFormsInput.value);
+            const newForm = emptyFormTemplate.replace(/__prefix__/g, formNum);
+            container.insertAdjacentHTML('beforeend', newForm);
+            totalFormsInput.value = formNum + 1;
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        setup_formset('parametros-form-container', 'add-parametro-button', 'parametro-empty-form', 'parametros');
+        setup_formset('bois-form-container', 'add-boi-button', 'boi-empty-form', 'bois');
+    });
+    </script>
+
+</body>
+</html>

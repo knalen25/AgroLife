@@ -1,0 +1,11 @@
+<h2>Medicamentos</h2>
+<a href="{% url 'criarmedicamento' %}">Novo Medicamento</a>
+<ul>
+    {% for m in medicamentos %}
+        <li>
+            {{ m.nome_medicamento }} - {{ m.tipo_medicamento }}
+            <a href="{% url 'editarmedicamento' m.pk %}">✏️</a>
+            <a href="{% url 'deletarmedicamento' m.pk %}">🗑️</a>
+        </li>
+    {% endfor %}
+</ul>

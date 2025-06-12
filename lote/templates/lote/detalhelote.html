@@ -1,0 +1,133 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Detalhes do Lote{% endblock %}
+
+{% block content %}
+
+<style>
+    .main-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: calc(100% - 250px); /* Quando a sidebar está expandida */
+        margin-left: 250px; /* Largura da sidebar expandida */
+        transition: margin-left 0.3s ease, width 0.3s ease;
+        background-color: #f5f5f5;
+        padding: 20px;
+        box-sizing: border-box; /* Garante que padding seja incluído no tamanho total */
+    }
+    
+    .sidebar.collapsed + .main-content {
+        width: calc(100% - 60px); /* Quando a sidebar está colapsada */
+        margin-left: 60px; /* Largura da sidebar colapsada */
+    }
+    
+    /* Estilização do Card Responsivo */
+    .detail-card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        padding: 20px 40px;
+        max-width: 600px;
+        width: 100%; /* O card ocupará toda a largura disponível, limitado pelo max-width */
+        text-align: center;
+        box-sizing: border-box;
+    }
+    
+    .detail-card h1 {
+        margin-bottom: 20px;
+        font-size: 35px;
+        color: #333;
+    }
+    
+    .detail-card p {
+        margin: 10px 0;
+        font-size: 30px;
+        color: #555;
+    }
+    
+    /* Botões Responsivos */
+    .buttons-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px; /* Espaçamento entre os botões */
+        margin-top: 20px;
+    }
+    
+    .detail-card .btn {
+        flex: 1; /* Garante que os botões ocupem a largura proporcional */
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        color: white;
+        text-align: center;
+        transition: background-color 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .buttons-container .btn-primary {
+        background-color: #28a745;
+    }
+    
+    .buttons-container .btn-primary:hover {
+        background-color: #218838;
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .buttons-container .btn-secondary {
+        background-color: #ff1d0b;
+    }
+    
+    .buttons-container .btn-secondary:hover {
+        background-color: #b81414;
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn-danger {
+        background-color: #343a40;
+    }
+    
+    .btn-danger:hover {
+        background-color: #23272b; /* Tom mais escuro no hover */
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Sombra ao passar o mouse */
+    }
+    
+    /* Responsividade para dispositivos menores */
+    @media (max-width: 768px) {
+        .main-content {
+            width: 100%;
+            margin-left: 0; /* Sidebar colapsada em telas pequenas */
+        }
+    
+        .sidebar.collapsed + .main-content {
+            width: 100%;
+        }
+    
+        .detail-card {
+            padding: 15px 20px;
+            max-width: 90%; /* O card ocupa 90% da largura em telas pequenas */
+        }
+    
+        .buttons-container {
+            flex-direction: column; /* Botões empilhados em telas pequenas */
+            gap: 10px;
+        }
+    }
+    </style>
+    
+    <div class="detail-card">
+        <h1>{{ lote.nome }}</h1>
+        <p><strong>Data Inicio:</strong> {{ lote.data_inicio }}</p>
+        <p><strong>Curral:</strong> {{ lote.curral }}</p>
+        <div class="buttons-container">
+            <a href="{% url 'atualizalote' pk=object.pk %}" class="btn btn-primary">Editar</a>
+            <a href="{% url 'deletalote' pk=object.pk %}" class="btn btn-secondary">Excluir</a>
+            <a href="{% url 'listalote' %}" class="btn btn-danger">Voltar</a>
+        </div>
+    </div>
+
+{% endblock %}

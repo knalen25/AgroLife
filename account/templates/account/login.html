@@ -1,0 +1,38 @@
+{% block content %}
+{% load static %}  <!-- Carrega os arquivos estáticos do Django -->
+<!-- Link para o arquivo CSS -->
+<link rel="stylesheet" href="{% static 'css/stylelogin.css' %}">
+<div class="login-box">
+    <div class="login-header">
+        <header>AgroLife</header>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="input-box">
+            <input type="text" name="username" placeholder="Nome de usuário" class="input-field" value="{{ llogin_form.username.value|default:''}}" />
+        </div>
+
+        <div class="input-box">
+            <input type="password" name="password" placeholder="Senha" class="input-field" value="{{ login_form.password.value|default:'' }}" />
+        </div>
+
+        <div class="forgot">
+            <section>
+                {{ login_form.remember_me }} <!-- Campo de "Lembrar-me" -->
+                <input type="checkbox" name="remember_me" id="remember_me"> </input>
+                <label for="remember_me" >Mantenha-me conectado</label>
+            </section>
+            <section>
+                <a href="#">Esqueci a senha</a>
+            </section>
+        </div>
+
+        <div class="input-submit">
+            <button type="submit" class="submit-btn" id="btn-submit"></button>
+            <label for="btn-submit">Entrar</label>
+        </div>
+    </form>
+</div>
+{% endblock %}

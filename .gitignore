@@ -1,0 +1,46 @@
+# Bytecode Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambientes virtuais
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# Arquivos de banco de dados SQLite
+*.sqlite3
+
+# Configurações locais / arquivos de sistema
+*.log
+*.pot
+*.pyc
+.DS_Store
+Thumbs.db
+
+# Configurações do VSCode
+.vscode/
+
+# Arquivos do sistema Linux/macOS
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# Arquivos de mídia temporários
+*.mp4
+*.avi
+*.mkv
+*.mov
+*.png
+*.jpg
+*.jpeg
+*.webp
+
+# Arquivos de migração cacheados
+**/__pycache__/
+
+# Django: chaves locais, arquivos sensíveis
+*.env
+*.secret

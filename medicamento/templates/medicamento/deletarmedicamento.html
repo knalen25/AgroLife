@@ -1,0 +1,5 @@
+<h2>Excluir Medicamento</h2>
+<p>Tem certeza que deseja excluir "{{ object.nome_medicamento }}"?</p>
+<form method="post">{% csrf_token %}
+    <button type="submit">Sim, excluir</button>
+</form>

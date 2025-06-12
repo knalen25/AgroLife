@@ -1,0 +1,8 @@
+<h2>Excluir Aplicação de Medicamento</h2>
+<p>Tem certeza que deseja excluir a aplicação de {{ evento.boi }} em {{ evento.data_aplicacao_medicamento }}?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirmar Exclusão</button>
+    <a href="{% url 'listaaplicacoes' %}">Cancelar</a>
+</form>

@@ -1,0 +1,170 @@
+{% extends 'home/base.html' %}
+{% block title %}Registrar Morte{% endblock %}
+
+{% block content %}
+<style>
+  /* Container Principal */
+  .main-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      width: calc(100% - 250px);
+      margin-left: 250px;
+      transition: margin-left 0.3s ease, width 0.3s ease;
+      background-color: #18181b;  /* mesmo fundo escuro do base.html */
+      padding: 20px;
+      box-sizing: border-box;
+  }
+  .sidebar.collapsed + .main-content {
+      width: calc(100% - 60px);
+      margin-left: 60px;
+  }
+
+  /* Container da Lista */
+  .list-container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #1f1f2e;  /* container em cinza escuro */
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+      color: #e5e7eb;             /* texto claro */
+      box-sizing: border-box;
+  }
+
+  /* Título */
+  .list-container h1 {
+      font-size: 32px;
+      color: #f3f4f6;
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+  }
+
+  /* Formulário de Busca */
+  .search-form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+  }
+  .search-input {
+      flex: 1;
+      max-width: 350px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #374151;
+      border-radius: 5px;
+      background-color: #111827;
+      color: #f3f4f6;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      box-sizing: border-box;
+  }
+  .search-input::placeholder { color: #9ca3af; }
+  .search-input:focus {
+      border-color: #2563eb;
+      outline: none;
+      box-shadow: 0 0 5px rgba(37, 99, 235, 0.5);
+  }
+  .search-form .btn {
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      min-width: 130px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+  .search-button { background-color: #2563eb; }
+  .search-button:hover { background-color: #1e40af; box-shadow: 0 4px 6px rgba(0,0,0,0.5); }
+  .clear-button { background-color: #dc2626; }
+  .clear-button:hover { background-color: #991b1b; box-shadow: 0 4px 6px rgba(0,0,0,0.5); }
+  .add-button { background-color: #16a34a; }
+  .add-button:hover { background-color: #166534; box-shadow: 0 4px 6px rgba(0,0,0,0.5); }
+
+  /* Tabela da Lista */
+  .list-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 16px;
+      text-align: left;
+  }
+  .list-table th,
+  .list-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #374151;
+  }
+  .list-table th {
+      background-color: #111827;
+      color: #f3f4f6;
+      font-size: 18px;
+  }
+  .list-table tbody tr {
+      background-color: #1f1f2e;
+  }
+  .list-table tbody tr:hover {
+      background-color: #374151;
+      transition: background-color 0.3s ease;
+  }
+  .list-table td {
+      color: #e5e7eb;
+  }
+  .list-table .no-results {
+      text-align: center;
+      color: #9ca3af;
+      font-style: italic;
+      padding: 20px;
+  }
+
+  /* Responsividade */
+  @media (max-width: 768px) {
+      .main-content {
+          width: 100%;
+          margin-left: 0;
+      }
+      .sidebar.collapsed + .main-content {
+          width: 100%;
+      }
+      .list-container {
+          padding: 15px;
+      }
+      .search-form {
+          flex-direction: column;
+          align-items: stretch;
+      }
+      .search-input {
+          width: 100%;
+      }
+      .search-form .btn {
+          width: 100%;
+      }
+      .list-table th,
+      .list-table td {
+          font-size: 14px;
+          padding: 10px;
+      }
+  }
+</style>
+
+<div class="list-container" style="max-width:600px;">
+  <h1>Registrar Morte do Boi {{ object.brinco }}</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div style="text-align:right;margin-top:20px;">
+      <button type="submit" class="btn clear-button">Salvar</button>
+      <a href="{% url 'listamorte' %}" class="btn add-button">Voltar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

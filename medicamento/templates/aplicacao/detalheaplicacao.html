@@ -1,0 +1,25 @@
+<h2>Detalhes da Aplicação de Medicamento</h2>
+
+<p><strong>Data:</strong> {{ evento.data_aplicacao_medicamento }}</p>
+<p><strong>Boi:</strong> {{ evento.boi }}</p>
+<p><strong>Doença:</strong> {{ evento.doenca|default:"-" }}</p>
+<p><strong>Responsável Técnico:</strong> {{ evento.responsavel_tecnico|default:"-" }}</p>
+
+<hr>
+
+<h3>Medicamentos Aplicados</h3>
+{% if medicamentos_aplicados %}
+    <ul>
+        {% for ma in medicamentos_aplicados %}
+            <li>{{ ma.medicamento.nome_medicamento }} – {{ ma.dose_aplicada }} ml</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Nenhum medicamento registrado.</p>
+{% endif %}
+
+<hr>
+
+<a href="{% url 'aplicacao' evento.pk %}">✏️ Editar</a> |
+<a href="{% url 'deletaraplicacao' evento.pk %}">🗑️ Excluir</a> |
+<a href="{% url 'listaaplicacoes' %}">🔙 Voltar para Lista</a>

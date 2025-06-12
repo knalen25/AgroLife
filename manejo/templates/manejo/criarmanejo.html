@@ -1,0 +1,83 @@
+{% block content %}
+<form method="post" novalidate>
+    {% csrf_token %}
+    <div id="container-formset-entrada" class="d-none">
+        <div class="card mb-4">
+            <div class="card-header">Cadastrar Novos Bois (Entrada)</div>
+            <div class="card-body">
+                {{ boi_formset_entrada.management_form }}
+                <div id="boi-entrada-list">
+                    {% for form in boi_formset_entrada %}
+                        <div class="boi-entrada-form mb-3 p-3 border rounded">
+                            {{ form.id }}
+                            <div class="row g-3">
+                                <div class="col-md-4">{{ form.brinco.label_tag }}{{ form.brinco }}{{ form.brinco.errors }}</div>
+                                <div class="col-md-4">{{ form.raca.label_tag }}{{ form.raca }}{{ form.raca.errors }}</div>
+                                <div class="col-md-4">{{ form.sexo.label_tag }}{{ form.sexo }}{{ form.sexo.errors }}</div>
+                                <div class="col-md-4">{{ form.data_entrada.label_tag }}{{ form.data_entrada }}{{ form.data_entrada.errors }}</div>
+                                <div class="col-md-4">{{ form.peso_entrada.label_tag }}{{ form.peso_entrada }}{{ form.peso_entrada.errors }}</div>
+                                <div class="col-md-4">{{ form.fornecedor.label_tag }}{{ form.fornecedor }}{{ form.fornecedor.errors }}</div>
+                                <div class="col-md-6">{{ form.data_nascimento.label_tag }}{{ form.data_nascimento }}{{ form.data_nascimento.errors }}</div>
+                                <div class="col-md-6">{{ form.status_boi.label_tag }}{{ form.status_boi }}{{ form.status_boi.errors }}</div>
+                                {% if form.can_delete %}
+                                <div class="col-12">{{ form.DELETE.label_tag }} {{ form.DELETE }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div id="empty-boi-entrada-form" class="d-none">
+                     <div class="boi-entrada-form mb-3 p-3 border rounded">
+                        {{ boi_formset_entrada.empty_form.id }}
+                        <div class="row g-3">
+                            {% for field in boi_formset_entrada.empty_form %}
+                            <div class="col-md-4">{{ field.label_tag }} {{ field }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="add-boi-entrada-form" class="btn btn-secondary btn-sm mt-2">
+                    Adicionar outro Boi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Salvar Manejo</button>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Script para alternar os containers (da resposta anterior)
+// ...
+
+// Script para adicionar mais formulários de boi
+document.addEventListener('DOMContentLoaded', function() {
+    function addFormRow(btnId, listId, emptyFormId, prefix, rowClass) {
+        const addBtn = document.getElementById(btnId);
+        if (!addBtn) return;
+
+        addBtn.addEventListener('click', function() {
+            const list = document.getElementById(listId);
+            const totalFormsInput = document.querySelector(`#id_${prefix}-TOTAL_FORMS`);
+            const emptyFormHtml = document.getElementById(emptyFormId).innerHTML;
+            
+            let formNum = parseInt(totalFormsInput.value);
+            let newForm = emptyFormHtml.replace(/__prefix__/g, formNum);
+            
+            let newRow = document.createElement('div');
+            newRow.innerHTML = newForm;
+            
+            list.appendChild(newRow);
+            totalFormsInput.value = formNum + 1;
+        });
+    }
+
+    addFormRow('add-boi-entrada-form', 'boi-entrada-list', 'empty-boi-entrada-form', 'bois_entrada');
+    // Adicione chamadas para outros formsets se necessário
+});
+</script>
+{% endblock %}

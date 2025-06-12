@@ -1,0 +1,22 @@
+<h2>Detalhes do Protocolo</h2>
+
+<p><strong>Nome:</strong> {{ protocolo.nome_protocolo }}</p>
+<p><strong>Motivo:</strong> {{ protocolo.motivo_protocolo }}</p>
+<p><strong>Responsável Técnico:</strong> {{ protocolo.responsavel_tecnico }}</p>
+
+<hr>
+<h3>Medicamentos Associados</h3>
+{% if medicamentos %}
+    <ul>
+        {% for pm in medicamentos %}
+            <li>{{ pm.medicamento.nome_medicamento }} – {{ pm.dose_protocolo }} ml</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Nenhum medicamento cadastrado.</p>
+{% endif %}
+
+<hr>
+<a href="{% url 'atualizarprotocolo' protocolo.pk %}">✏️ Editar</a> |
+<a href="{% url 'deletarprotocolo' protocolo.pk %}">🗑️ Excluir</a> |
+<a href="{% url 'listaprotocolo' %}">🔙 Voltar à Lista</a>

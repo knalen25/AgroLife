@@ -1,0 +1,8 @@
+{% block content %}
+  <h2>Troca de Curral em Lote</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Confirmar Troca</button>
+  </form>
+{% endblock %}

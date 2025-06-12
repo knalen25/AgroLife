@@ -1,0 +1,43 @@
+<form method="post">
+    {% csrf_token %}
+    {{ protocolo_form.as_p }}
+    {{ formset.management_form }}
+
+    <div id="formset-container">
+        {% for form in formset %}
+            <fieldset style="border: 1px solid #ccc; margin-bottom: 10px;">
+                {{ form.as_p }}
+            </fieldset>
+        {% endfor %}
+    </div>
+
+    <button type="button" onclick="addForm()">Adicionar Medicamento</button>
+    <br><br>
+    <button type="submit">Salvar</button>
+
+    <div id="empty-form" style="display:none;">
+        <div class="formset-form">
+            {{ formset.empty_form.as_p|safe }}
+        </div>
+    </div>
+</form>
+
+{% if medicamentos %}
+    <h3>Medicamentos já adicionados:</h3>
+    <ul>
+        {% for pm in medicamentos %}
+            <li>{{ pm.medicamento.nome_medicamento }} - {{ pm.dose_protocolo }} ml</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<script>
+function addForm() {
+    const container = document.getElementById('formset-container');
+    const total = document.getElementById('id_form-TOTAL_FORMS');
+    const formIdx = total.value;
+    const newForm = document.getElementById('empty-form').innerHTML.replace(/__prefix__/g, formIdx);
+    container.insertAdjacentHTML('beforeend', newForm);
+    total.value = parseInt(formIdx) + 1;
+}
+</script>

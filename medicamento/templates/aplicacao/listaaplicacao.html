@@ -1,0 +1,9 @@
+<h2>Aplicações Realizadas</h2>
+<a href="{% url 'criaraplicacao' %}">Nova Aplicação</a>
+<ul>
+    {% for a in aplicacoes %}
+        <li>
+            {{ a.data_aplicacao_medicamento }} – Boi: {{ a.boi }} – {{ a.doenca }}
+        </li>
+    {% endfor %}
+</ul>

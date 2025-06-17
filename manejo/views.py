@@ -3,11 +3,11 @@
 from django.shortcuts import render, redirect
 from django.db import transaction
 from django.contrib import messages
-from manejo.forms import ManejoForm, ParametroManejoFormSet, BoiEntradaFormSet, SelecaoLoteForm, BoiSaidaFormSet, VendaBoiForm, BuscaBoiForm
+from decimal import Decimal
+from manejo.forms import ManejoForm, ParametroManejoFormSet, BoiEntradaFormSet, BuscaBoiForm,VendaBoiForm, ParametroMovimentacaoFormSet, MovimentacaoDataForm
 from manejo.models import Manejo, TipoManejo, StatusManejo, BoiManejo
 from boi.models import StatusBoi
-from lote.models import Lote
-from boi.models import Boi
+from boi.models import Boi, PesoMovimentacao
 import datetime
 
 # @transaction.atomic
@@ -110,7 +110,7 @@ def manejo_saida_venda(request):
         data_manejo_geral = datetime.datetime.strptime(venda_atual[0]['data_saida'], '%Y-%m-%d').date()
         manejo = Manejo.objects.create(
             tipo_manejo=TipoManejo.objects.get(nome_tipo_manejo='saida'),
-            status_manejo=StatusManejo.objects.get(nome_status_manejo='Concluído'),
+            status_manejo=StatusManejo.objects.get(nome_status_manejo='Concluido'),
             data_manejo=data_manejo_geral
         )
         status_vendido = StatusBoi.objects.get(nome_status='Vendido')
@@ -179,5 +179,139 @@ def manejo_saida_venda(request):
     # Carrega a lista da sessão para exibir no template
     venda_atual_data = request.session.get('venda_atual', [])
     context['venda_atual'] = venda_atual_data
+
+    return render(request, template_name, context)
+
+
+
+
+# @transaction.atomic
+def manejo_movimentacao(request):
+    """
+    View consolidada para o manejo de movimentação.
+    CORRIGIDA para preservar o estado dos formulários durante as ações
+    e garantir a validação correta ao finalizar.
+    """
+    template_name = 'manejo/manejomovimentacao.html'
+    context = {}
+
+    # Inicializa a lista de movimentação na sessão do usuário
+    if 'movimentacao_atual' not in request.session:
+        request.session['movimentacao_atual'] = []
+
+    # --- LÓGICA DE PROCESSAMENTO DO POST ---
+    if request.method == 'POST':
+        # Instancia os formulários principais com os dados do POST para preservá-los
+        manejo_form = ManejoForm(request.POST, prefix='manejo')
+        formset_parametros = ParametroMovimentacaoFormSet(request.POST, prefix='parametros')
+        
+        # AÇÃO 1: FINALIZAR E SALVAR TUDO
+        if 'finalizar_movimentacao' in request.POST:
+            animais_na_sessao = request.session.get('movimentacao_atual', [])
+
+            if not animais_na_sessao:
+                messages.error(request, "A lista de movimentação está vazia. Adicione animais antes de finalizar.")
+                context['manejo_form'] = manejo_form # Devolve os forms com os dados preenchidos
+                context['formset_parametros'] = formset_parametros
+            elif manejo_form.is_valid() and formset_parametros.is_valid():
+                # Cria o Manejo principal
+                manejo = manejo_form.save(commit=False)
+                manejo.tipo_manejo = TipoManejo.objects.get(nome_tipo_manejo='movimentacao')
+                manejo.status_manejo = StatusManejo.objects.get(nome_status_manejo='Concluido')
+                manejo.save()
+
+                # Salva os parâmetros deste manejo
+                formset_parametros.instance = manejo
+                formset_parametros.save()
+                regras_deste_manejo = manejo.parametros_manejo.all()
+
+                # Processa os animais da sessão
+                for dados_boi in animais_na_sessao:
+                    boi = Boi.objects.get(pk=dados_boi['boi_id'])
+                    # Converte o peso de volta para Decimal para comparação segura
+                    novo_peso = Decimal(dados_boi['peso_movimentacao'])
+
+                    PesoMovimentacao.objects.create(
+                        boi=boi, peso_movimentacao=novo_peso, data_movimentacao=manejo.data_manejo
+                    )
+
+                    novo_lote = None
+                    for regra in regras_deste_manejo:
+                        if regra.raca == boi.raca and regra.peso_inicial <= novo_peso <= regra.peso_final:
+                            novo_lote = regra.lote
+                            break
+                    
+                    if novo_lote and boi.lote != novo_lote:
+                        boi.lote = novo_lote
+                        boi.save()
+
+                    BoiManejo.objects.create(boi=boi, manejo=manejo)
+
+                del request.session['movimentacao_atual']
+                messages.success(request, "Manejo de movimentação salvo com sucesso!")
+                return redirect('pagina_de_sucesso_ou_listagem_de_manejos')
+            else:
+                # Se a validação falhar, os formulários com erros serão passados para o contexto.
+                messages.error(request, "Não foi possível salvar. Verifique os erros no formulário de manejo ou nos parâmetros.")
+                context['manejo_form'] = manejo_form
+                context['formset_parametros'] = formset_parametros
+
+        # AÇÃO 2: ADICIONAR UM BOI À LISTA NA SESSÃO
+        elif 'adicionar_boi' in request.POST:
+            mov_data_form = MovimentacaoDataForm(request.POST)
+            if mov_data_form.is_valid():
+                boi_id = mov_data_form.cleaned_data['boi_id']
+                if not any(b['boi_id'] == boi_id for b in request.session['movimentacao_atual']):
+                    boi_instance = Boi.objects.get(pk=boi_id)
+                    request.session['movimentacao_atual'].append({
+                        'boi_id': boi_id,
+                        'brinco': boi_instance.brinco,
+                        'lote_atual': boi_instance.lote.nome_lote if boi_instance.lote else 'Sem Lote',
+                        # Converte para string para ser compatível com JSON da sessão
+                        'peso_movimentacao': str(mov_data_form.cleaned_data['peso_movimentacao'])
+                    })
+                    request.session.modified = True
+                    messages.success(request, f"Boi {boi_instance.brinco} adicionado à lista.")
+                else:
+                    messages.warning(request, "Este animal já está na lista.")
+                # Limpa o formulário de busca para o próximo animal, sem recarregar a página com redirect
+                context['busca_form'] = BuscaBoiForm()
+            else:
+                 # Se o form de adição for inválido, precisa reenviar o boi encontrado
+                 context['boi_encontrado'] = Boi.objects.get(pk=request.POST.get('boi_id'))
+                 context['mov_data_form'] = mov_data_form
+            
+            # Passa os formulários principais para o contexto para preservar os dados
+            context['manejo_form'] = manejo_form
+            context['formset_parametros'] = formset_parametros
+            
+
+        # AÇÃO 3: BUSCAR UM BOI
+        elif 'buscar_boi' in request.POST:
+            busca_form = BuscaBoiForm(request.POST)
+            if busca_form.is_valid():
+                brinco = busca_form.cleaned_data['brinco']
+                try:
+                    boi_encontrado = Boi.objects.get(brinco__iexact=brinco, status_boi__nome_status='Ativo')
+                    context['boi_encontrado'] = boi_encontrado
+                    context['mov_data_form'] = MovimentacaoDataForm(initial={'boi_id': boi_encontrado.idboi})
+                except Boi.DoesNotExist:
+                    messages.error(request, f"Nenhum boi ATIVO encontrado com o brinco '{brinco}'.")
+            
+            # Adiciona os formulários (com os dados) ao contexto para repopular o template
+            context['manejo_form'] = manejo_form
+            context['formset_parametros'] = formset_parametros
+            context['busca_form'] = busca_form
+
+    # --- PREPARAÇÃO DO CONTEXTO PARA GET OU RENDERIZAÇÃO PÓS-POST ---
+    # Se um formulário ainda não estiver no contexto, cria uma instância vazia.
+    if 'manejo_form' not in context:
+        context['manejo_form'] = ManejoForm(prefix='manejo', initial={'data_manejo': datetime.date.today()})
+    if 'formset_parametros' not in context:
+        context['formset_parametros'] = ParametroMovimentacaoFormSet(prefix='parametros')
+    if 'busca_form' not in context:
+        context['busca_form'] = BuscaBoiForm()
+
+    context['animais_na_movimentacao'] = request.session.get('movimentacao_atual', [])
 
     return render(request, template_name, context)

@@ -1,8 +1,9 @@
 from django.urls import path
-from manejo.views import criar_manejo_entrada, manejo_saida_venda
+from manejo.views import criar_manejo_entrada, manejo_saida_venda, manejo_movimentacao
 
 
 urlpatterns = [
     path('entrada/', criar_manejo_entrada, name='criar_manejo_entrada'),
     path('venda/', manejo_saida_venda, name='manejo_saida_venda'),
+    path('movimentacao/', manejo_movimentacao, name='manejo_movimentacao')
 ]

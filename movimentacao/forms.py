@@ -1,7 +1,5 @@
 from django import forms
-from lote.models import Lote
-from curral.models import Curral
-from movimentacao.models import StatusMovimentacao, Movimentacao
+from movimentacao.models import Movimentacao
 
 class TrocaCurralForm(forms.ModelForm):
     class Meta:

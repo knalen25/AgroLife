@@ -2,174 +2,342 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}AgroLife{% endblock %}</title>
-    <meta name="description" content="Sistema de gestão agropecuária">
-    <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    <style>
-        :root {
-            --color-primary: #4a8c25;
-            --color-primary-dark: #3a7020;
-            --color-secondary: #f59e0b;
-            --color-success: #10b981;
-            --color-warning: #f59e0b;
-            --color-danger: #ef4444;
-            --color-accent: #8b5cf6;
-            --color-background: #18181b;
-            --color-text: #f1f5f9;
-            --color-text-muted: #a1a1aa;
-            --color-border: #27272a;
-        }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            color: var(--color-text);
-            background-color: var(--color-background);
-        }
-        .bg-primary { background-color: var(--color-primary); }
-        .text-primary { color: var(--color-primary); }
-        .border-primary { border-color: var(--color-primary); }
-        .bg-primary-dark { background-color: var(--color-primary-dark); }
-        .dark-bg { background-color: #18181b; }
-        .dark-text { color: #f1f5f9; }
-        .dark-border { border-color: #27272a; }
-    </style>
-    {% block extra_css %}{% endblock %}
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}AgroLife{% endblock %}</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      height: 100vh;
+      background-color: #f5f5f5;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #141432;
+      color: white;
+      height: 100vh;
+      position: fixed;
+      display: flex;
+      flex-direction: column;
+      transition: width 0.3s ease;
+      overflow-y: auto;
+    }
+
+    .sidebar.collapsed {
+      width: 60px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+      background-color: #1d1d3b;
+      border-bottom: 1px solid #2d2d4f;
+    }
+
+    .logo .logo-text {
+      display: inline-block;
+      transition: opacity 0.3s ease, width 0.3s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      margin-left: 10px;
+    }
+
+    .sidebar.collapsed .logo .logo-text {
+      opacity: 0;
+      pointer-events: none;
+      width: 0;
+    }
+
+    .menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      flex: 1;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 15px 20px;
+      cursor: pointer;
+      color: white;
+      border-bottom: 1px solid #2d2d4f;
+      transition: background-color 0.3s ease;
+    }
+
+    .menu-item i {
+      font-size: 20px;
+      margin-right: 15px;
+    }
+
+    .menu-item:hover {
+      background-color: #2d2d4f;
+    }
+
+    .menu-item .title {
+      font-size: 16px;
+      transition: opacity 0.3s ease, margin 0.3s ease;
+      text-align: left;
+      margin-left: 10px;
+      width: 100%;
+    }
+
+    .sidebar.collapsed .menu-item .title {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .has-submenu {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .has-submenu .menu-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .submenu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: none;
+      flex-direction: column;
+      background-color: #1d1d3b;
+    }
+
+    .submenu.open {
+      display: flex;
+    }
+
+    .submenu-item {
+      padding: 10px 20px;
+      font-size: 14px;
+      color: #b3b3cc;
+      transition: color 0.3s ease, background-color 0.3s ease;
+      text-align: left;
+    }
+
+    .submenu-item a {
+      text-decoration: none;
+      color: #b3b3cc;
+      display: block;
+      transition: color 0.3s ease, background-color 0.3s ease;
+    }
+
+    .submenu-item a:hover {
+      color: white;
+      background-color: #2d2d4f;
+    }
+
+    .submenu-item a:visited {
+      color: #b3b3cc;
+    }
+
+    .submenu-item a.active {
+      color: white;
+      font-weight: bold;
+      background-color: #1d1d3b;
+    }
+
+    .menu-item a.submenu-link {
+      text-decoration: none;
+      color: #b3b3cc;
+      font-size: 14px;
+      display: inline-block;
+      padding: 10px 0;
+      transition: color 0.3s ease, background-color 0.3s ease;
+    }
+
+    .menu-item a.submenu-link:hover {
+      color: white;
+      background-color: #2d2d4f;
+      border-radius: 4px;
+    }
+
+    .menu-item a.submenu-link.active {
+      color: white;
+      font-weight: bold;
+      background-color: #1d1d3b;
+    }
+
+    .main-content {
+      margin-left: 250px;
+      padding: 20px;
+      transition: margin-left 0.3s ease;
+      background-color: #f5f5f5;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .sidebar.collapsed + .main-content {
+      margin-left: 60px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 60px;
+      }
+
+      .sidebar.collapsed {
+        width: 0;
+      }
+
+      .main-content {
+        margin-left: 60px;
+      }
+
+      .sidebar.collapsed + .main-content {
+        margin-left: 0;
+      }
+
+      .menu-item .title {
+        display: none;
+      }
+
+      .submenu-item {
+        font-size: 12px;
+      }
+    }
+  </style>
 </head>
-<body class="dark-bg dark-text min-h-screen">
-    <div class="flex flex-col md:flex-row min-h-screen w-full">
-        <!-- Sidebar -->
-        <aside class="w-full md:w-64 bg-zinc-900 border-r dark-border flex-shrink-0">
-            <div class="p-6 flex flex-col items-center border-b dark-border gap-4">
-                <img src="{% static 'img/logo.png' %}" alt="Logo AgroLife" class="h-16 max-h-20 w-auto mx-auto block object-contain">
-            </div>
-            <nav class="p-4">
-                <ul class="space-y-1">
-                    <li>
-                        <a href="/" class="flex items-center px-4 py-2 rounded-lg text-gray-200 hover:bg-green-800 focus:bg-green-900 transition-colors duration-200">
-                            <span class="mr-3">🏠</span> Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <div class="flex flex-col">
-                            <button type="button" class="flex items-center px-4 py-2 rounded-lg text-gray-200 hover:bg-green-800 focus:bg-green-900 transition-colors duration-200 group" onclick="document.getElementById('cadastro-submenu').classList.toggle('hidden')">
-                                <span class="mr-3">📋</span> Cadastro
-                                <svg class="w-4 h-4 ml-auto transform group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </button>
-                            <ul id="cadastro-submenu" class="ml-8 mt-1 space-y-1 hidden bg-zinc-800 rounded-lg shadow-lg p-2">
-                                <li><a href="{% url 'listaboi' %}" class="block px-3 py-1 rounded hover:bg-green-900 focus:bg-green-900 transition-colors duration-200">Animal</a></li>
-                                <li><a href="{% url 'listacurral' %}" class="block px-3 py-1 rounded hover:bg-green-900 focus:bg-green-900 transition-colors duration-200">Curral</a></li>
-                                <li><a href="{% url 'listalote' %}" class="block px-3 py-1 rounded hover:bg-green-900 focus:bg-green-900 transition-colors duration-200">Lote</a></li>
-                                {% comment %} <li><a href="{% url 'listamedicamento' %}" class="block px-3 py-1 rounded hover:bg-green-900 focus:bg-green-900 transition-colors duration-200">Medicação</a></li> {% endcomment %}
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center px-4 py-2 rounded-lg text-gray-200 hover:bg-green-800 focus:bg-green-900 transition-colors duration-200">
-                            <span class="mr-3">🛠️</span> Manejo
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center px-4 py-2 rounded-lg text-gray-200 hover:bg-green-800 focus:bg-green-900 transition-colors duration-200">
-                            <span class="mr-3">❤️</span> Sanidade
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center px-4 py-2 rounded-lg text-gray-200 hover:bg-green-800 focus:bg-green-900 transition-colors duration-200">
-                            <span class="mr-3">🚑</span> Ronda
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="flex items-center px-4 py-2 rounded-lg text-gray-200 hover:bg-green-800 focus:bg-green-900 transition-colors duration-200">
-                            <span class="mr-3">📈</span> Relatórios
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'logout' %}" class="flex items-center px-4 py-2 rounded-lg text-gray-200 hover:bg-green-800 focus:bg-green-900 transition-colors duration-200">
-                            <span class="mr-3">⏻</span> Sair
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-        <!-- Mobile menu -->
-        <div class="bg-primary text-white md:hidden w-full fixed top-0 z-10">
-            <div class="flex items-center justify-between p-4">
-                <span class="text-xl font-bold">AgroLife</span>
-                <button id="mobile-menu-button" class="focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-            </div>
-            <div id="mobile-menu" class="hidden bg-primary-dark p-4">
-                <nav>
-                    <ul class="space-y-2">
-                        <li><a href="/" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Dashboard</a></li>
-                        <li><a href="{% url 'listaboi' %}" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Animal</a></li>
-                        <li><a href="{% url 'listacurral' %}" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Curral</a></li>
-                        <li><a href="{% url 'listalote' %}" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Lote</a></li>
-                        {% comment %} <li><a href="{% url 'listamedicamento' %}" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Medicação</a></li> {% endcomment %}
-                        <li><a href="#" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Manejo</a></li>
-                        <li><a href="#" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Sanidade</a></li>
-                        <li><a href="#" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Ronda</a></li>
-                        <li><a href="#" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Relatórios</a></li>
-                        <li><a href="{% url 'logout' %}" class="block py-2 text-white hover:bg-primary-dark rounded px-3">Sair</a></li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
-        <!-- Main content -->
-        <main class="flex-1 min-h-screen overflow-y-auto bg-zinc-800 md:p-6 p-4 md:pt-6 pt-20 flex flex-col">
-            {% block header %}{% endblock %}
-            <div class="animate-enter flex-1 flex flex-col">
-                {% block content %}
-                <!-- DASHBOARD INICIAL -->
-                <div class="w-full max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-16 px-2">
-                    <div class="bg-zinc-900 rounded-2xl p-8 flex flex-col items-center shadow-xl border-2 border-zinc-700 hover:border-green-700 transition-all duration-200">
-                        <span class="text-5xl mb-3">🐄</span>
-                        <span class="text-lg font-semibold">Animais</span>
-                        <span class="text-3xl font-bold mt-2">123</span>
-                    </div>
-                    <div class="bg-zinc-900 rounded-2xl p-8 flex flex-col items-center shadow-xl border-2 border-zinc-700 hover:border-green-700 transition-all duration-200">
-                        <span class="text-5xl mb-3">🏠</span>
-                        <span class="text-lg font-semibold">Currais</span>
-                        <span class="text-3xl font-bold mt-2">8</span>
-                    </div>
-                    <div class="bg-zinc-900 rounded-2xl p-8 flex flex-col items-center shadow-xl border-2 border-zinc-700 hover:border-green-700 transition-all duration-200">
-                        <span class="text-5xl mb-3">💉</span>
-                        <span class="text-lg font-semibold">Medicações</span>
-                        <span class="text-3xl font-bold mt-2">15</span>
-                    </div>
-                    <div class="bg-zinc-900 rounded-2xl p-8 flex flex-col items-center shadow-xl border-2 border-zinc-700 hover:border-green-700 transition-all duration-200">
-                        <span class="text-5xl mb-3">📈</span>
-                        <span class="text-lg font-semibold">Relatórios</span>
-                        <span class="text-3xl font-bold mt-2">5</span>
-                    </div>
-                </div>
-                <!-- FIM DASHBOARD INICIAL -->
-                {% endblock %}
-            </div>
-            <footer class="mt-auto pt-6 pb-4 text-sm text-center text-gray-400">
-                <p>© {% now "Y" %} AgroLife - Sistema de Gestão Agropecuária</p>
-            </footer>
-        </main>
-        {% block sidebar %}{% endblock %}
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <i class='bx bxs-florist menu-toggle-icon'></i>
+      <span class="logo-text">AgroLife</span>
     </div>
-    <script>
-        // Mobile menu toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            const menuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            if (menuButton && mobileMenu) {
-                menuButton.addEventListener('click', function() {
-                    mobileMenu.classList.toggle('hidden');
-                });
-            }
+    <ul class="menu">
+      <li class="menu-item">
+        <i class='bx bx-grid-alt menu-toggle-icon'></i>
+        <span class="title">Dashboard</span>
+      </li>
+      <li class="menu-item has-submenu">
+        <div class="menu-link">
+          <i class='bx bx-columns menu-toggle-icon'></i>
+          <span class="title">Cadastro</span>
+          <i class='bx bx-chevron-down dropdown-icon'></i>
+        </div>
+        <ul class="submenu">
+          <li class="submenu-item"><a href='{% url 'listaboi' %}'> Animal </a></li>
+          <li class="submenu-item"><a href='{% url 'listacurral' %}'>Curral</a></li>
+          <li class="submenu-item"><a href='{% url 'listalote' %}'>Lote</a></li>
+          <li class="submenu-item"><a href='{% url 'listamedicamento' %}'>Medicação</a></li>
+          <li class="submenu-item"><a href='{% url 'listaaplicacao' %}'>Aplicacao</a></li>
+        </ul>
+      </li>
+      <li class="menu-item has-submenu">
+        <div class="menu-link">
+          <i class='bx bx-compass menu-toggle-icon'></i>
+          <span class="title">Manejo</span>
+          <i class='bx bx-chevron-down dropdown-icon'></i>
+        </div>
+        <ul class="submenu">
+          <li class="submenu-item">Entrada</li>
+          <li class="submenu-item">Movimentação</li>
+          <li class="submenu-item">Saída</li>
+          <li class="submenu-item"><a href='{% url 'listamovimentacao' %}'>Troca de curral</a></li>
+        </ul>
+      </li>
+      <li class="menu-item has-submenu">
+        <div class="menu-link">
+          <i class='bx bx-heart menu-toggle-icon'></i>
+          <span class="title">Sanidade</span>
+          <i class='bx bx-chevron-down dropdown-icon'></i>
+        </div>
+        <ul class="submenu">
+          <li class="submenu-item">Aplicação Individual</li>
+          <li class="submenu-item">Protocolo Sanitário</li>
+        </ul>
+      </li>
+      <li class="menu-item has-submenu">
+        <div class="menu-link">
+          <i class='bx bxs-ambulance menu-toggle-icon'></i>
+          <span class="title">Ronda</span>
+          <i class='bx bx-chevron-down dropdown-icon'></i>
+        </div>
+        <ul class="submenu">
+          <li class="submenu-item">Registrar Morte</li>
+          <li class="submenu-item">Registrar Nascimento</li>
+        </ul>
+      </li>
+      <li class="menu-item has-submenu">
+        <div class="menu-link">
+          <i class='bx bx-line-chart menu-toggle-icon'></i>
+          <span class="title">Relatórios</span>
+          <i class='bx bx-chevron-down dropdown-icon'></i>
+        </div>
+        <ul class="submenu">
+          <li class="submenu-item">Histórico Animal</li>
+          <li class="submenu-item">Doenças Recorrentes</li>
+          <li class="submenu-item">Animais Medicados</li>
+          <li class="submenu-item">Animais Manejados</li>
+        </ul>
+      </li>
+      <li class="menu-item">
+        <i class='bx bx-log-out menu-toggle-icon'></i>
+        <span class="title"><a href="{% url 'logout' %}" class="submenu-link">Sair</a></span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="main-content">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const sidebar = document.querySelector('.sidebar');
+  
+      const toggleSidebar = () => {
+        sidebar.classList.toggle('collapsed');
+  
+        if (sidebar.classList.contains('collapsed')) {
+          document.querySelectorAll('.submenu').forEach(submenu => {
+            submenu.classList.remove('open');
+          });
+        }
+      };
+  
+      document.querySelectorAll('.menu-toggle-icon').forEach(icon => {
+        icon.addEventListener('click', toggleSidebar);
+      });
+  
+      document.querySelectorAll('.has-submenu .menu-link').forEach(link => {
+        link.addEventListener('click', () => {
+          if (!sidebar.classList.contains('collapsed')) {
+            const submenu = link.nextElementSibling;
+            submenu.classList.toggle('open');
+          }
         });
-    </script>
-    {% block extra_js %}{% endblock %}
+      });
+  
+      // Máscara de telefone
+      const telInput = document.querySelector('input[name="telefone"]');
+      if (telInput) {
+        Inputmask({"mask": "(99) 99999-9999"}).mask(telInput);
+      }
+    });
+  </script>
+  
+  
 </body>
 </html>

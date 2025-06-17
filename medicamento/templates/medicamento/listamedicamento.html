@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Lista de Medicamentos</h2>
+    <a href="{% url 'criarmedicamento' %}" class="btn btn-primary mb-3">Novo Medicamento</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Laboratório</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for medicamento in medicamentos %}
+                <tr>
+                    <td>{{ medicamento.nome_medicamento }}</td>
+                    <td>{{ medicamento.tipo_medicamento }}</td>
+                    <td>{{ medicamento.laboratorio }}</td>
+                    <td>
+                        <a href="{% url 'deletarmedicamento' medicamento.pk %}" class="btn btn-danger btn-sm">Excluir</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">Nenhum medicamento cadastrado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

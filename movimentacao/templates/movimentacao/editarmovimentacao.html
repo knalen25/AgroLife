@@ -1,0 +1,10 @@
+{% extends 'home/base.html' %}
+{% block content %}
+<h2>Editar Movimentação</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Salvar</button>
+</form>
+<a href="{% url 'listamovimentacao' %}">Cancelar</a>
+{% endblock %}

@@ -10,7 +10,7 @@ urlpatterns = [
     path('', v.home, name='base'),
     path('admin/', admin.site.urls),
     path("curral/", include("curral.urls")),
-    # path("medicamento/", include("medicamento.urls")),
+    path("medicamento/", include("medicamento.urls")),
     path("lote/", include("lote.urls")),
     path("boi/", include("boi.urls")),
     path("account/", include("account.urls")),
@@ -19,5 +19,4 @@ urlpatterns = [
     path('protocolo/', include("protocolo.urls")),
     path('movimentacao/', include("movimentacao.urls")),
     path('manejo/', include('manejo.urls')),
-
 ]

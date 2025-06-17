@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Lista de Aplicações de Medicamento</h2>
+    <a href="{% url 'criaraplicacao' %}" class="btn btn-primary mb-3">Nova Aplicação</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Boi</th>
+                <th>Responsável Técnico</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for aplicacao in aplicacoes %}
+                <tr>
+                    <td>{{ aplicacao.data_aplicacao_medicamento }}</td>
+                    <td>{{ aplicacao.boi }}</td>
+                    <td>{{ aplicacao.responsavel_tecnico }}</td>
+                    <td>
+                        <a href="{% url 'deletaraplicacao' aplicacao.pk %}" class="btn btn-danger btn-sm">Excluir</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">Nenhuma aplicação registrada.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

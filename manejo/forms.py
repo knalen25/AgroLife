@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
-from .models import Manejo, ParametroManejo, TipoManejo, StatusManejo
+from manejo.models import Manejo, ParametroManejo, TipoManejo, StatusManejo
+from protocolo.models import ProtocoloSanitario
 from boi.models import Boi
 from lote.models import Lote
 
@@ -134,3 +135,48 @@ class VendaBoiForm(forms.Form):
     # Detalhes da venda para este boi específico
     peso_saida = forms.DecimalField(label="Peso de Saída (kg)", required=True)
     data_saida = forms.DateField(label="Data da Saída", required=True, widget=forms.DateInput(attrs={'type': 'date'}))
+
+
+
+
+
+class ManejoForm(forms.ModelForm):
+    """
+    Formulário para os detalhes gerais do Manejo.
+    CORRIGIDO para incluir o campo obrigatório 'protocolo_sanitario'.
+    """
+    data_manejo = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}), label="Data do Manejo")
+    protocolo_sanitario = forms.ModelChoiceField(
+        queryset=ProtocoloSanitario.objects.all(), # Ou um queryset mais específico
+        label="Protocolo Sanitário",
+        required=True
+    )
+    
+    class Meta:
+        model = Manejo
+        # Adicione 'protocolo_sanitario' aos fields
+        fields = ['data_manejo', 'protocolo_sanitario']
+
+class ParametroMovimentacaoForm(forms.ModelForm):
+    """Formulário para as regras (sem alterações)."""
+    class Meta:
+        model = ParametroManejo
+        fields = ['lote', 'raca', 'peso_inicial', 'peso_final']
+
+class BuscaBoiForm(forms.Form):
+    """Formulário para buscar um boi (sem alterações)."""
+    brinco = forms.CharField(label="Buscar pelo Brinco", max_length=20)
+
+class MovimentacaoDataForm(forms.Form):
+    """Formulário para inserir o novo peso de um boi encontrado (sem alterações)."""
+    boi_id = forms.IntegerField(widget=forms.HiddenInput())
+    peso_movimentacao = forms.DecimalField(label="Novo Peso (kg)", required=True)
+
+
+# FormSets
+from django.forms import inlineformset_factory
+
+ParametroMovimentacaoFormSet = inlineformset_factory(
+    Manejo, ParametroManejo, form=ParametroMovimentacaoForm,
+    extra=1, can_delete=True, fk_name='manejo',
+)

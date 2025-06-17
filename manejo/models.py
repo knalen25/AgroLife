@@ -4,7 +4,7 @@ from django.db import models
 class TipoManejo(models.Model):
     idtipo_manejo = models.AutoField(primary_key=True)
     nome_tipo_manejo = models.CharField(
-        max_length=10,
+        max_length=20,
         help_text="Descrição do tipo de manejo (por exemplo: 'Pesagem', 'Vacinação')."
     )
 

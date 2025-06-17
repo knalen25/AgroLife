@@ -1,0 +1,10 @@
+{% extends 'home/base.html' %}
+{% block content %}
+<h2>Confirmar Exclusão</h2>
+<p>Tem certeza que deseja excluir a movimentação do dia {{ object.data_movimentacao }}?</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Confirmar</button>
+</form>
+<a href="{% url 'listamovimentacao' %}">Cancelar</a>
+{% endblock %}

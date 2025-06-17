@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Registrar Aplicação de Medicamento no Boi</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <fieldset class="border p-3 mb-3">
+            <legend>Dados da Aplicação</legend>
+            {{ form.as_p }}
+        </fieldset>
+
+        <fieldset class="border p-3 mb-3">
+            <legend>Medicamentos Aplicados</legend>
+            {{ formset.management_form }}
+            {% for form in formset %}
+                <div class="border p-2 mb-2">
+                    {{ form.as_p }}
+                </div>
+            {% endfor %}
+        </fieldset>
+
+        <button type="submit" class="btn btn-success">Salvar Aplicação</button>
+        <a href="{% url 'listaaplicacao' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .main-container { display: flex; gap: 2em; }
+    .col-main { flex: 2; }
+    .col-side { flex: 1; }
+    .animal-card { background: #e3f2fd; padding: 1em; margin-top: 1em; border-radius: 5px; }
+    .btn-add { background-color: #28a745; color: white; border: none; padding: 0.5em 1em; border-radius: 5px; cursor: pointer; }
+</style>
+
+<h1>Manejo de Movimentação</h1>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+<div class="main-container">
+
+    <div class="col-main">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-section">
+                <h3>1. Detalhes e Regras da Movimentação</h3>
+                {{ manejo_form.as_p }}
+                <hr>
+                <h4>Parâmetros de Reclassificação</h4>
+                {{ formset_parametros.management_form }}
+                <div id="parametros-container">
+                    {% for form in formset_parametros %}
+                        <div class="form-container parametro-form">
+                            {{ form.as_p }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="btn-add" id="add-parametro-btn">Adicionar Regra</button>
+            </div>
+            
+            <div class="form-section">
+                <h3>3. Animais a Serem Processados ({{ animais_na_movimentacao|length }})</h3>
+                {% if animais_na_movimentacao %}
+                    <table>
+                        <thead><th>Brinco</th><th>Lote Atual</th><th>Novo Peso</th></thead>
+                        <tbody>
+                        {% for boi in animais_na_movimentacao %}
+                            <tr>
+                                <td>{{ boi.brinco }}</td>
+                                <td>{{ boi.lote_atual }}</td>
+                                <td>{{ boi.peso_movimentacao }} kg</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <br>
+                    <button type="submit" name="finalizar_movimentacao" class="btn-submit">Finalizar e Salvar Movimentação</button>
+                {% else %}
+                    <p>A lista está vazia. Use a busca ao lado para adicionar animais.</p>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <div class="col-side">
+        <div class="form-section">
+            <h3>2. Buscar e Adicionar Animal</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ busca_form.as_p }}
+                <button type="submit" name="buscar_boi">Buscar</button>
+            </form>
+
+            {% if boi_encontrado %}
+            <div class="animal-card">
+                <h4>Animal Encontrado</h4>
+                <p><strong>Brinco:</strong> {{ boi_encontrado.brinco }}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ mov_data_form.as_p }}
+                    <button type="submit" name="adicionar_boi">Adicionar à Lista</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+<div id="parametro-empty-form" style="display: none;">
+    <div class="form-container parametro-form">
+        {{ formset_parametros.empty_form.as_p }}
+    </div>
+</div>
+
+<script>
+function setup_formset(containerId, buttonId, emptyFormId, prefix) {
+    const container = document.getElementById(containerId);
+    const addButton = document.getElementById(buttonId);
+    
+    if (!container || !addButton) {
+        return;
+    }
+
+    const emptyFormTemplate = document.getElementById(emptyFormId).innerHTML;
+    const totalFormsInput = document.querySelector(`input[name="${prefix}-TOTAL_FORMS"]`);
+
+    addButton.addEventListener('click', function() {
+        let formNum = parseInt(totalFormsInput.value);
+        const newFormHtml = emptyFormTemplate.replace(/__prefix__/g, formNum);
+        
+        container.insertAdjacentHTML('beforeend', newFormHtml);
+        
+        totalFormsInput.value = formNum + 1;
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    setup_formset('parametros-container', 'add-parametro-btn', 'parametro-empty-form', 'parametros');
+});
+</script>
+
+{% endblock %}

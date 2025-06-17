@@ -1,0 +1,12 @@
+{% extends 'home/base.html' %}
+{% block content %}
+<h2>Detalhes da Movimentação</h2>
+<ul>
+  <li><strong>Data:</strong> {{ movimentacao.data_movimentacao }}</li>
+  <li><strong>Status:</strong> {{ movimentacao.status }}</li>
+  <li><strong>Lote Origem:</strong> {{ movimentacao.lote_origem }}</li>
+  <li><strong>Lote Destino:</strong> {{ movimentacao.lote_destino }}</li>
+  <li><strong>Curral Destino:</strong> {{ movimentacao.curral_destino }}</li>
+</ul>
+<a href="{% url 'listamovimentacao' %}">Voltar</a>
+{% endblock %}

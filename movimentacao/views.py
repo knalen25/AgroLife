@@ -1,13 +1,13 @@
 from django.views import View
 from django.shortcuts import render, redirect
-from django.utils import timezone
-
-from .forms import TrocaCurralForm
-from movimentacao.models import Movimentacao
+from movimentacao.forms import TrocaCurralForm
 from boi.models import Boi
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
+from movimentacao.models import Movimentacao
 
-class TrocaCurralView(View):
-    template_name = "movimentacao/troca_curral.html"
+class MovimentacaoView(View):
+    template_name = "movimentacao/criarmovimentacao.html"
 
     def get(self, request):
         form = TrocaCurralForm()
@@ -18,13 +18,50 @@ class TrocaCurralView(View):
         if form.is_valid():
             movimentacao = form.save()
 
-            # Atualizar curral do lote destino
             lote_destino = movimentacao.lote_destino
             lote_destino.curral = movimentacao.curral_destino
             lote_destino.save()
 
-            # Atualizar bois para o novo lote
             Boi.objects.filter(lote=movimentacao.lote_origem).update(lote=movimentacao.lote_destino)
 
-            return redirect('lista_boas_movimentacoes')  # redirecione conforme sua URL
+            return redirect('listamovimentacao')
         return render(request, self.template_name, {'form': form})
+    
+class MovimentacaoListView(ListView):
+    model = Movimentacao
+    template_name = 'movimentacao/listamovimentacao.html'
+    context_object_name = 'movimentacoes'
+
+class MovimentacaoDetailView(DetailView):
+    model = Movimentacao
+    template_name = 'movimentacao/detalhemovimentacao.html'
+    context_object_name = 'movimentacao'
+
+class MovimentacaoUpdateView(UpdateView):
+    model = Movimentacao
+    form_class = TrocaCurralForm
+    template_name = 'movimentacao/editarmovimentacao.html'
+    success_url = reverse_lazy('listamovimentacao')
+
+class MovimentacaoDeleteView(DeleteView):
+    model = Movimentacao
+    template_name = 'movimentacao/deletarmovimentacao.html'
+    success_url = reverse_lazy('listamovimentacao')    
+    template_name = 'movimentacao/listamovimentacao.html'
+    context_object_name = 'movimentacoes'
+
+class MovimentacaoDetailView(DetailView):
+    model = Movimentacao
+    template_name = 'movimentacao/detalhemovimentacao.html'
+    context_object_name = 'movimentacao'
+
+class MovimentacaoUpdateView(UpdateView):
+    model = Movimentacao
+    form_class = TrocaCurralForm
+    template_name = 'movimentacao/editarmovimentacao.html'
+    success_url = reverse_lazy('listamovimentacao')
+
+class MovimentacaoDeleteView(DeleteView):
+    model = Movimentacao
+    template_name = 'movimentacao/deletarmovimentacao.html'
+    success_url = reverse_lazy('listamovimentacao')

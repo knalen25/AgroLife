@@ -10,6 +10,8 @@ class StatusMovimentacao(models.Model):
     class Meta:
         db_table = 'status_movimentacao'
 
+    def __str__(self):
+        return self.nome_status
 
 class Movimentacao(models.Model):
     idmovimentacao = models.AutoField(primary_key=True)
@@ -19,8 +21,6 @@ class Movimentacao(models.Model):
         on_delete=models.PROTECT,
         related_name='movimentacoes'
     )
-
-    # ✅ Adicionados diretamente:
     lote_origem = models.ForeignKey(
         'lote.Lote',
         on_delete=models.PROTECT,
@@ -39,3 +39,6 @@ class Movimentacao(models.Model):
 
     class Meta:
         db_table = 'movimentacao'
+
+    def __str__(self):
+        return f"{self.data_movimentacao} | {self.lote_origem} → {self.lote_destino}"

@@ -41,27 +41,11 @@ class MovimentacaoUpdateView(UpdateView):
     model = Movimentacao
     form_class = TrocaCurralForm
     template_name = 'movimentacao/editarmovimentacao.html'
-    success_url = reverse_lazy('listamovimentacao')
-
-class MovimentacaoDeleteView(DeleteView):
-    model = Movimentacao
-    template_name = 'movimentacao/deletarmovimentacao.html'
-    success_url = reverse_lazy('listamovimentacao')    
-    template_name = 'movimentacao/listamovimentacao.html'
-    context_object_name = 'movimentacoes'
-
-class MovimentacaoDetailView(DetailView):
-    model = Movimentacao
-    template_name = 'movimentacao/detalhemovimentacao.html'
     context_object_name = 'movimentacao'
-
-class MovimentacaoUpdateView(UpdateView):
-    model = Movimentacao
-    form_class = TrocaCurralForm
-    template_name = 'movimentacao/editarmovimentacao.html'
     success_url = reverse_lazy('listamovimentacao')
 
 class MovimentacaoDeleteView(DeleteView):
     model = Movimentacao
     template_name = 'movimentacao/deletarmovimentacao.html'
-    success_url = reverse_lazy('listamovimentacao')
+    context_object_name = 'movimentacao'
+    success_url = reverse_lazy('listamovimentacao')    

@@ -180,3 +180,12 @@ ParametroMovimentacaoFormSet = inlineformset_factory(
     Manejo, ParametroManejo, form=ParametroMovimentacaoForm,
     extra=1, can_delete=True, fk_name='manejo',
 )
+
+
+
+
+
+class ManejoUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Manejo
+        fields = ['status_manejo', 'data_manejo', 'protocolo_sanitario']

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Confirmar Exclusão{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="h3 mb-4 text-gray-800">Confirmar Exclusão</h2>
+
+    <div class="card shadow mb-4 border-left-danger">
+        <div class="card-body">
+            <p>Você tem certeza que deseja excluir permanentemente o <strong>Manejo #{{ manejo.idManejo }}</strong> (Tipo: {{ manejo.tipo_manejo.nome_tipo_manejo }}) realizado em {{ manejo.data_manejo|date:"d/m/Y" }}?</p>
+            <p class="text-danger"><strong>Atenção:</strong> Esta ação não pode ser desfeita.</p>
+            
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Sim, tenho certeza. Excluir.</button>
+                <a href="{% url 'detalhemanejo' manejo.pk %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

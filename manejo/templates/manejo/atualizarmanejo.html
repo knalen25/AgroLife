@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Atualizar Manejo #{{ manejo.idManejo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="h3 mb-4 text-gray-800">Atualizando o Manejo #{{ manejo.idManejo }}</h2>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Edite os detalhes abaixo</h6>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                {{ form.as_p }}
+
+                <hr>
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                <a href="{% url 'detalhemanejo' manejo.pk %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

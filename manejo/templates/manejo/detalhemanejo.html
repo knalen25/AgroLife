@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Detalhes do Manejo #{{ manejo.idManejo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="h3 mb-4 text-gray-800">Detalhes do Manejo #{{ manejo.idManejo }}</h2>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Informações Gerais</h6>
+        </div>
+        <div class="card-body">
+            <p><strong>Tipo:</strong> {{ manejo.tipo_manejo.nome_tipo_manejo|capfirst }}</p>
+            <p><strong>Data:</strong> {{ manejo.data_manejo|date:"d/m/Y" }}</p>
+            <p><strong>Status:</strong> {{ manejo.status_manejo.nome_status_manejo }}</p>
+            <p><strong>Protocolo Sanitário:</strong> {{ manejo.protocolo_sanitario.nome_protocolo }}</p>
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Parâmetros Utilizados</h6>
+        </div>
+        <div class="card-body">
+            <ul>
+                {% for parametro in manejo.parametros_manejo.all %}
+                    <li>Lote <strong>{{ parametro.lote.nome_lote }}</strong> para raça <strong>{{ parametro.raca.nome_raca }}</strong> com peso entre <strong>{{ parametro.peso_inicial }}kg</strong> e <strong>{{ parametro.peso_final }}kg</strong>.</li>
+                {% empty %}
+                    <li>Nenhum parâmetro específico foi definido para este manejo.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Animais Envolvidos</h6>
+        </div>
+        <div class="card-body">
+            <ul>
+                {% for boi_manejo in manejo.bois_em_manejo.all %}
+                    <li>Boi com brinco <strong>{{ boi_manejo.boi.brinco }}</strong></li>
+                {% empty %}
+                    <li>Nenhum animal foi associado a este manejo.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <a href="{% url 'listamanejo' %}" class="btn btn-secondary">Voltar para a Lista</a>
+    <a href="{% url 'editarmanejo' manejo.pk %}" class="btn btn-warning">Editar Manejo</a>
+</div>
+{% endblock %}

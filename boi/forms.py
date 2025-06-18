@@ -28,10 +28,8 @@ class BoiModelForm(forms.ModelForm):
         }
 
     def save(self, commit=True):
-        # Garante que todo boi recém-criado fique 'Ativo' por padrão
         self.instance.status_boi = Boi.status_boi.ATIVO
         return super().save(commit=commit)
-
 
 class BoiMorteForm(forms.ModelForm):
     status_boi = forms.ModelChoiceField(
@@ -60,13 +58,11 @@ class BoiMorteForm(forms.ModelForm):
         status = cleaned.get("status_boi")
         data_morte = cleaned.get("data_morte")
         motivo    = cleaned.get("motivo_morte")
-
-        # Verifica se o usuário escolheu o status "Morto"
+        
         if status and status.nome_status == "Morto":
             if not data_morte:
                 self.add_error("data_morte", 'Obrigatório ao marcar como "Morto".')
             if not motivo:
                 self.add_error("motivo_morte", 'Obrigatório ao marcar como "Morto".')
-
         return cleaned
 

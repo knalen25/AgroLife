@@ -9,14 +9,12 @@ from .models import (
     PesoProjetado,
 )
 
-
 @admin.register(Fornecedor)
 class FornecedorAdmin(admin.ModelAdmin):
     list_display = ("idfornecedor", "nome_fornecedor")
     search_fields = ("nome_fornecedor",)
     ordering = ("nome_fornecedor",)
     list_per_page = 20
-
 
 @admin.register(Sexo)
 class SexoAdmin(admin.ModelAdmin):
@@ -25,7 +23,6 @@ class SexoAdmin(admin.ModelAdmin):
     ordering = ("tipo_sexo",)
     list_per_page = 20
 
-
 @admin.register(Raca)
 class RacaAdmin(admin.ModelAdmin):
     list_display = ("idraca", "nome_raca")
@@ -33,14 +30,12 @@ class RacaAdmin(admin.ModelAdmin):
     ordering = ("nome_raca",)
     list_per_page = 20
 
-
 @admin.register(StatusBoi)
 class StatusBoiAdmin(admin.ModelAdmin):
     list_display = ("idstatus_boi", "nome_status")
     search_fields = ("nome_status",)
     ordering = ("nome_status",)
     list_per_page = 20
-
 
 @admin.register(Boi)
 class BoiAdmin(admin.ModelAdmin):
@@ -94,7 +89,6 @@ class BoiAdmin(admin.ModelAdmin):
         ),
     )
 
-
 @admin.register(PesoMovimentacao)
 class PesoMovimentacaoAdmin(admin.ModelAdmin):
     list_display = ("id_peso_movimentacao", "boi", "data_movimentacao", "peso_movimentacao")
@@ -110,7 +104,6 @@ class PesoMovimentacaoAdmin(admin.ModelAdmin):
             },
         ),
     )
-
 
 @admin.register(PesoProjetado)
 class PesoProjetadoAdmin(admin.ModelAdmin):

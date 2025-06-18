@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de Manejos{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 mb-0 text-gray-800">Manejos Registrados</h2>
+        <div class="btn-group">
+            <a href="{% url 'criar_manejo_entrada' %}" class="btn btn-success">
+                <i class='bx bx-plus-medical'></i> Novo Manejo de Entrada
+            </a>
+            <!-- Adicione links para outras criações se desejar -->
+            <!-- <a href="#" class="btn btn-info">Novo Manejo de Saída</a> -->
+            <!-- <a href="#" class="btn btn-warning">Nova Movimentação</a> -->
+        </div>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tipo</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                            <th>Protocolo</th>
+                            <th class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for manejo in manejos %}
+                        <tr>
+                            <td>#{{ manejo.idManejo }}</td>
+                            <td>{{ manejo.tipo_manejo.nome_tipo_manejo|capfirst }}</td>
+                            <td>{{ manejo.data_manejo|date:"d/m/Y" }}</td>
+                            <td>{{ manejo.status_manejo.nome_status_manejo }}</td>
+                            <td>{{ manejo.protocolo_sanitario.nome_protocolo }}</td>
+                            <td class="text-center">
+                                <a href="{% url 'detalhemanejo' manejo.pk %}" class="btn btn-info btn-sm" title="Detalhes">
+                                    <i class='bx bx-show'></i>
+                                </a>
+                                <a href="{% url 'editarmanejo' manejo.pk %}" class="btn btn-warning btn-sm" title="Editar">
+                                    <i class='bx bx-edit'></i>
+                                </a>
+                                <a href="{% url 'deletarmanejo' manejo.pk %}" class="btn btn-danger btn-sm" title="Excluir">
+                                    <i class='bx bx-trash'></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">Nenhum manejo encontrado.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

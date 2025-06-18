@@ -4,10 +4,12 @@ from django.shortcuts import render, redirect
 from django.db import transaction
 from django.contrib import messages
 from decimal import Decimal
-from manejo.forms import ManejoForm, ParametroManejoFormSet, BoiEntradaFormSet, BuscaBoiForm,VendaBoiForm, ParametroMovimentacaoFormSet, MovimentacaoDataForm
+from manejo.forms import ManejoForm, ParametroManejoFormSet, BoiEntradaFormSet, BuscaBoiForm,VendaBoiForm, ParametroMovimentacaoFormSet, MovimentacaoDataForm, ManejoUpdateForm
 from manejo.models import Manejo, TipoManejo, StatusManejo, BoiManejo
 from boi.models import StatusBoi
 from boi.models import Boi, PesoMovimentacao
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
+from django.urls import reverse_lazy
 import datetime
 
 # @transaction.atomic
@@ -315,3 +317,67 @@ def manejo_movimentacao(request):
     context['animais_na_movimentacao'] = request.session.get('movimentacao_atual', [])
 
     return render(request, template_name, context)
+
+
+# class ManejoListView(ListView):
+#     model = Manejo
+#     template_name = 'manejo/listamanejo.html'
+#     context_object_name = 'manejos'
+
+class ManejoListView(ListView):
+    model = Manejo
+    template_name = 'manejo/listamanejo.html'
+    context_object_name = 'manejos'
+    paginate_by = 10 # Opcional: adiciona paginação para listas longas
+
+    def get_queryset(self):
+        """
+        Sobrescreve o método padrão para filtrar o queryset.
+        """
+        # Pega o parâmetro 'tipo' da URL, se ele foi fornecido.
+        tipo_manejo_str = self.kwargs.get('tipo')
+        
+        # Começa com todos os manejos, ordenados do mais recente para o mais antigo.
+        queryset = super().get_queryset().order_by('-data_manejo', '-idManejo')
+
+        if tipo_manejo_str:
+            # Se um tipo foi passado na URL, filtra o queryset.
+            # Usamos __iexact para ignorar diferenças entre maiúsculas e minúsculas (ex: 'Entrada' vs 'entrada').
+            return queryset.filter(tipo_manejo__nome_tipo_manejo__iexact=tipo_manejo_str)
+        
+        # Se nenhum tipo foi especificado na URL, retorna todos os manejos.
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        """
+        Adiciona informações extras ao contexto que será enviado para o template.
+        """
+        context = super().get_context_data(**kwargs)
+        # Passa o tipo do filtro atual para o template, para podermos usá-lo no título, etc.
+        # Se nenhum tipo for passado, o padrão é 'Todos'.
+        context['tipo_filtro'] = self.kwargs.get('tipo', 'Todos')
+        return context
+    
+
+class ManejoDetailView(DetailView):
+    model = Manejo
+    template_name = 'manejo/detalhemanejo.html'
+    context_object_name = 'manejo'
+
+
+class ManejoUpdateView(UpdateView):
+    model = Manejo
+    form_class = ManejoUpdateForm
+    template_name = 'manejo/atualizarmanejo.html'
+    context_object_name = 'manejo'
+    success_url = reverse_lazy('listamanejo')
+
+
+class ManejoDeleteView(DeleteView):
+    model = Manejo
+    template_name = 'manejo/deletarmanejo.html'
+    context_object_name = 'manejo'
+    success_url = reverse_lazy('listamanejo')    
+
+
+

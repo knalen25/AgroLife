@@ -1,7 +1,7 @@
 from django.urls import reverse_lazy
 from django.shortcuts import render
 from boi.forms import BoiModelForm, BoiMorteForm
-from boi.models import Boi
+from boi.models import Boi, StatusBoi
 from django.views.generic import DetailView, DeleteView, UpdateView, CreateView, ListView
 from django.db.models import Q
 
@@ -60,14 +60,18 @@ class ListaBoiMorteView(ListView):
     context_object_name = 'bois'
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(status_boi__in=[Boi.StatusChoices.ATIVO, Boi.StatusChoices.MORTO]).order_by('brinco')
+        status_ids = StatusBoi.objects.filter(nome_status__in=['Ativo', 'Morto']).values_list('idstatus_boi', flat=True)
+
+        queryset = super().get_queryset().filter(status_boi__in=status_ids).order_by('brinco')
+
         search = self.request.GET.get('search')
         if search:
             queryset = queryset.filter(
-            Q(brinco__icontains=search) |
-            Q(fornecedor_nome__icontains=search) |
-            Q(status_boi__icontains=search) |
-            Q(lote__nome__icontains=search) |
-            Q(data_entrada__icontains=search)
-        ).order_by('brinco')
+                Q(brinco__icontains=search) |
+                Q(fornecedor__nome_fornecedor__icontains=search) |
+                Q(status_boi__nome_status__icontains=search) |
+                Q(lote__nome_lote__icontains=search) |
+                Q(data_entrada__icontains=search)
+            ).order_by('brinco')
+
         return queryset

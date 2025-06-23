@@ -6,13 +6,15 @@
 
     <div class="list-container">
         <h1>Lista de Bois</h1>
-    
-        <form method="get" action="" class="search-form">
-            <input type="text" name="search" placeholder="Buscar boi" value="{{ request.GET.search }}" class="search-input">
-            <button type="submit" class="btn search-button">Buscar</button>
-            <a href="{% url 'listaboi' %}" class="btn clear-button">Limpar</a>
-        </form>
-    
+        
+        <div>
+            <form method="get" action="" class="search-form">
+                <input type="text" name="search" placeholder="Buscar boi" value="{{ request.GET.search }}" class="search-input">
+                <button type="submit" class="btn search-button">Buscar</button>
+                <button><a href="{% url 'listaboi' %}" class="btn clear-button">Limpar</a></button>
+            </form>
+        </div>
+        
         <table class="list-table">
             <thead>
                 <tr>
@@ -38,13 +40,14 @@
                             <td>{{ boi.peso_entrada }}</td>
                             <td>{{ boi.data_nascimento }}</td>
                             <td>{{ boi.data_entrada }}</td>
-                            <td>{{ boi.get_status_boi_display }}</td>
+                            <!-- Antes: {{ boi.get_status_boi_display }} (incompatível pois status_boi é FK) -->
+                            <td>{{ boi.status_boi.nome_status }}</td>
                             <td>{{ boi.lote }}</td>
                         </tr>
                     {% endfor %}
                 {% else %}
                     <tr>
-                        <td colspan="13" class="no-results">Nenhum boi encontrado.</td>
+                        <td colspan="9" class="no-results">Nenhum boi encontrado.</td>
                     </tr>
                 {% endif %}
             </tbody>

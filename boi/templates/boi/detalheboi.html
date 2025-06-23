@@ -3,23 +3,66 @@
 {% block title %}Detalhes do Boi{% endblock %}
 
 {% block content %}
-
 <div class="detail-card">
     <h1>Detalhes do Boi: {{ object.brinco }}</h1>
-    <p><strong>Fornecedor:</strong> {{ object.fornecedor.nome_fornecedor }}</p>
-    <p><strong>Raça:</strong> {{ object.raca.tipo_raca }}</p>
-    <p><strong>Sexo:</strong> {{ object.sexo.tipo_sexo }}</p>
+
+    <p><strong>ID:</strong> {{ object.idboi }}</p>
+    <p><strong>Brinco:</strong> {{ object.brinco }}</p>
+    {% if object.chip %}
+    <p><strong>Chip:</strong> {{ object.chip }}</p>
+    {% endif %}
+
     <p><strong>Peso na Entrada:</strong> {{ object.peso_entrada }} kg</p>
     {% if object.peso_saida %}
     <p><strong>Peso na Saída:</strong> {{ object.peso_saida }} kg</p>
     {% endif %}
+
     <p><strong>Data de Nascimento:</strong> {{ object.data_nascimento }}</p>
     <p><strong>Data de Entrada:</strong> {{ object.data_entrada }}</p>
     {% if object.data_saida %}
     <p><strong>Data de Saída:</strong> {{ object.data_saida }}</p>
     {% endif %}
-    <p><strong>Status:</strong> {{ object.status_boi.tipo_status }}</p>
-    <p><strong>Lote:</strong> {{ object.lote.nome }}</p>
+    {% if object.data_morte %}
+    <p><strong>Data de Morte:</strong> {{ object.data_morte }}</p>
+    {% endif %}
+
+    {% if object.motivo_morte %}
+    <p><strong>Motivo da Morte:</strong> {{ object.motivo_morte }}</p>
+    {% endif %}
+    <p><strong>Necropsia:</strong> {% if object.necropsia %}Sim{% else %}Não{% endif %}</p>
+
+    <p><strong>Sexo:</strong> {{ object.sexo.tipo_sexo }}</p>
+    {% if object.fornecedor %}
+    <p><strong>Fornecedor:</strong> {{ object.fornecedor.nome_fornecedor }}</p>
+    {% endif %}
+    <p><strong>Raça:</strong> {{ object.raca.nome_raca }}</p>
+    <p><strong>Status:</strong> {{ object.status_boi.nome_status }}</p>
+    {% if object.lote %}
+    <p><strong>Lote:</strong> {{ object.lote }}</p>
+    {% endif %}
+
+    <h2>Histórico de Pesagens</h2>
+    {% if object.pesagens.exists %}
+    <ul>
+        {% for peso in object.pesagens.all %}
+        <li>{{ peso.data_movimentacao }}: {{ peso.peso_movimentacao }} kg</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Sem registros de pesagem.</p>
+    {% endif %}
+
+    <h2>Projeções de Peso</h2>
+    {% if object.projecoes_peso.exists %}
+    <ul>
+        {% for proj in object.projecoes_peso.all %}
+        <li>{{ proj.data_projetado }}: {{ proj.peso_projetado }} kg</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Sem projeções de peso.</p>
+    {% endif %}
+
     <div class="buttons-container">
         <a href="{% url 'atualizaboi' pk=object.pk %}" class="btn btn-primary">Editar</a>
         <a href="{% url 'deletaboi' pk=object.pk %}" class="btn btn-secondary">Excluir</a>

@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-
 <div class="form-container">
     <h2>Nascimento Animal</h2>
     <form method="post" enctype="multipart/form-data">
@@ -42,8 +41,9 @@
             {{ form.lote.label_tag }}
             {{ form.lote }}
         </div>
-        <div class="form-group" style="flex: 1 1 100%; text-align: right;">
-            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        <div>
+            <button type="submit"> Cadastrar </button>
+            <button><a href="{% url 'listaboi' %}"> Cancelar </a></button>
         </div>
     </form>
 </div>

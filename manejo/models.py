@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class TipoManejo(models.Model):
     idtipo_manejo = models.AutoField(primary_key=True)
     nome_tipo_manejo = models.CharField(
@@ -14,7 +13,6 @@ class TipoManejo(models.Model):
     def __str__(self):
         return self.nome_tipo_manejo
 
-
 class StatusManejo(models.Model):
     idstatus_manejo = models.AutoField(primary_key=True)
     nome_status_manejo = models.CharField(
@@ -27,7 +25,6 @@ class StatusManejo(models.Model):
 
     def __str__(self):
         return self.nome_status_manejo
-
 
 class Manejo(models.Model):
     idManejo = models.AutoField(primary_key=True)
@@ -60,7 +57,6 @@ class Manejo(models.Model):
     def __str__(self):
         return f"Manejo #{self.idManejo} - {self.data_manejo}"
 
-
 class BoiManejo(models.Model):
     idboi_manejo = models.AutoField(primary_key=True)
 
@@ -87,7 +83,9 @@ class BoiManejo(models.Model):
 
     class Meta:
         db_table = 'boi_manejo'
-
+        
+    def __str__(self):
+        return self.idboi_manejo
 
 class ParametroManejo(models.Model):
     idparametro_manejo = models.AutoField(primary_key=True)

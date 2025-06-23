@@ -14,6 +14,8 @@ class TipoCurral(models.Model):
     class Meta:
         db_table = 'Tipo_curral'
 
+    def __str__(self):
+        return self.nome_tipo_curral
 
 class Curral(models.Model):
     idCurral = models.AutoField(
@@ -59,6 +61,4 @@ class Curral(models.Model):
         db_table = 'Curral'
     
     def __str__(self):
-        # Esta função diz ao Django para usar o nome do curral como sua representação em texto
-        return self.nome_curral
-
+            return self.nome_curral

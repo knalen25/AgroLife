@@ -1,5 +1,3 @@
-# movimentacao/apps.py
-
 from django.apps import AppConfig
 
 class MovimentacaoConfig(AppConfig):

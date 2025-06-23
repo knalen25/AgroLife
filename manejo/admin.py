@@ -1,16 +1,6 @@
 from django.contrib import admin
-from .models import (
-    Manejo,
-    ParametroManejo,
-    BoiManejo,
-    TipoManejo,
-    StatusManejo
-)
+from .models import (Manejo, ParametroManejo, BoiManejo, TipoManejo, StatusManejo)
 
-
-#
-# Inline para ParametroManejo dentro de Manejo
-#
 class ParametroManejoInline(admin.TabularInline):
     model = ParametroManejo
     extra = 1
@@ -19,10 +9,6 @@ class ParametroManejoInline(admin.TabularInline):
     verbose_name = "Parâmetro de Manejo"
     verbose_name_plural = "Parâmetros de Manejo"
 
-
-#
-# Admin principal para Manejo
-#
 @admin.register(Manejo)
 class ManejoAdmin(admin.ModelAdmin):
     list_display = (
@@ -45,10 +31,6 @@ class ManejoAdmin(admin.ModelAdmin):
     autocomplete_fields = ('tipo_manejo', 'status_manejo', 'protocolo_sanitario')
     inlines = [ParametroManejoInline]
 
-
-#
-# Admin para BoiManejo (caso queira gerenciar separadamente)
-#
 @admin.register(BoiManejo)
 class BoiManejoAdmin(admin.ModelAdmin):
     list_display = (
@@ -61,20 +43,12 @@ class BoiManejoAdmin(admin.ModelAdmin):
     search_fields = ('boi__brinco', 'manejo__idManejo')
     list_filter = ('protocolo_sanitario',)
 
-
-#
-# Admin para TipoManejo
-#
 @admin.register(TipoManejo)
 class TipoManejoAdmin(admin.ModelAdmin):
     list_display = ('idtipo_manejo', 'nome_tipo_manejo')
     search_fields = ('nome_tipo_manejo',)
     ordering = ('nome_tipo_manejo',)
 
-
-#
-# Admin para StatusManejo
-#
 @admin.register(StatusManejo)
 class StatusManejoAdmin(admin.ModelAdmin):
     list_display = ('idstatus_manejo', 'nome_status_manejo')

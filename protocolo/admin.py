@@ -1,9 +1,6 @@
 from django.contrib import admin
 from .models import ProtocoloSanitario, ProtocoloMedicamento
-from medicamento.models import Medicamento, ResponsavelTecnico
 
-
-# Inline para adicionar vários medicamentos ao protocolo
 class ProtocoloMedicamentoInline(admin.TabularInline):
     model = ProtocoloMedicamento
     extra = 1
@@ -12,8 +9,6 @@ class ProtocoloMedicamentoInline(admin.TabularInline):
     verbose_name = "Medicamento do Protocolo"
     verbose_name_plural = "Medicamentos do Protocolo"
 
-
-# Admin principal para ProtocoloSanitario
 @admin.register(ProtocoloSanitario)
 class ProtocoloSanitarioAdmin(admin.ModelAdmin):
     list_display = ('idprotocolo_sanitario', 'nome_protocolo', 'motivo_protocolo', 'responsavel_tecnico')
@@ -23,8 +18,6 @@ class ProtocoloSanitarioAdmin(admin.ModelAdmin):
     autocomplete_fields = ('responsavel_tecnico',)
     inlines = [ProtocoloMedicamentoInline]
 
-
-# Admin direto para a tabela intermediária (opcional)
 @admin.register(ProtocoloMedicamento)
 class ProtocoloMedicamentoAdmin(admin.ModelAdmin):
     list_display = ('idprotocolo_medicamento', 'protocolo_sanitario', 'medicamento', 'dose_protocolo')
